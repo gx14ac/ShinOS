@@ -25,4 +25,4 @@ memcpy:
     mov sp, bp
     pop bp
 
-    ret            ; return 呼び出し元
+    ret
