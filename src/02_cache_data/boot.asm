@@ -17,12 +17,12 @@ ipl:
 
     sti                         ; enable interrupt.
 
-    mov [BOOT.DRIVE], dl        ; Saving BootDrive
+    mov [BOOT.DRIVE], dl        ; Saving BootDrive.
 
     jmp $
 
 ALIGN 2, db 0
-BOOT:                           ; infomation BootDrive
+BOOT:                           ; infomation BootDrive.
 .DRIVE  dw 0                    ; drive number.
 
     times 510 - ($ - $$) db 0x00
