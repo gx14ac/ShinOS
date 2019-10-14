@@ -13,12 +13,12 @@ memcmp:
     mov di, [bp+6]
     mov cx, [bp+8]
     
-    repe cmpsb
-    jnz .10F
-    mov ax, 0
-    jmp .10E
+    repe cmpsb ; si == di
+    jnz .10F   ; false jmp to .10F
+    mov ax, 0  ; return true
+    jmp .10E   ; end
 .10F
-    mov ax, -1
+    mov ax, -1 ; return false
 .10E
 
     pop di
