@@ -19,11 +19,11 @@ ipl:
 
     mov [BOOT.DRIVE], dl        ; Saving BootDrive.
 
-    mov al, 'A'                 ; AL = 文字出力
-    mov ah, 0x0E                ; テレタイプ式文字出力
-    mov bx, 0x0000              ; ページ番号と文字色を設定
+    mov al, 'A'                 ; al = A;
+    mov ah, 0x0E                ; teletype
+    mov bx, 0x0000              ; set page number & text color.
 
-    int 0x10                    ; ビデオBIOS コール
+    int 0x10                    ; call BIOS Video.
 
     jmp $
 
