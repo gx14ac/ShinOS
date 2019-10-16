@@ -20,7 +20,7 @@ ipl:
     mov [BOOT.DRIVE], dl        ; Saving BootDrive.
 
     mov al, 'A'                 ; al = A;
-    mov ah, 0x0E                ; teletype
+    mov ah, 0x0E                ; adding teletype.
     mov bx, 0x0000              ; set page number & text color.
 
     int 0x10                    ; call BIOS Video.
