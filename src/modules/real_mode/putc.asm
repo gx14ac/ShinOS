@@ -1,24 +1,50 @@
 putc:
-    ;;; Create Stack Frame.
-    push bp         ; push to stack base pointer register.
-    mov bp, sp      ; bp = sp. set top stack.
-    
-    ;;; Saving Register.
+    ;---------------------
+    ; Create Stack Frame.
+    ;---------------------
+    push bp          ; push to stack base pointer register.
+    mov  bp, sp      ; bp = sp. set top stack.
+
+    ;---------------------
+    ; Saving Register.
+    ;---------------------
     push ax         ; ax (ah, al)
     push bx         ; bx
-    
-    ;;; Starting put process.
-    mov al, [bp+4]  ; get Character output. access to first argument, al = arg.
+    push si         ; si
+
+    ;---------------------
+    ; Get func argument.
+    ;---------------------
+    mov si, [bp+4]
+
+    ;---------------------
+    ; Starting put process.
+    ;---------------------
     mov ah, 0x0E    ; show Character output.
     mov bx, 0x0000  ; set page number & text color to 0
-    
-    int 0x10        ; call VideoBios.
+    cld             ; DF = 0.
 
-    ;;; return Register
+.10L:               ; do
+                    ; {
+    lodsb           ; AL = *SI++.
+                    ;
+    cmp al, 0       ; if(0 == AL)
+    je .10E         ; break
+                    ;
+    int 0x10        ; Int10(0x0E, AL); prrint char.
+    jmp .10L        ;
+.10E:               ; while(1)
+
+    ;---------------------
+    ; return Register.
+    ;---------------------    
+    pop si
     pop bx
     pop ax
 
-    ;;; reset Stack frame.
+    ;---------------------
+    ; reset Stack frame.
+    ;---------------------
     mov sp, bp
     pop bp
     ret
