@@ -49,11 +49,30 @@ ipl:
 
     ;--------------------
     ; - Call putc function, argument is '.s0'.
-    ;--------------------    
+    ;--------------------
     cdecl putc, .s0
-    cdecl itoa, 8086, .s1, 8, 10, 0b0001; "8086"
-    cdecl putc, .s1
-    
+
+    ;--------------------
+    ; - Call itoa function, argument is '.s0'.
+    ;--------------------
+    ; cdecl itoa, 8086, .s1, 8, 10, 0b0001; "8086"
+    ; cdecl putc, .s1
+
+	cdecl	itoa,  8086, .s1, 8, 10, 0b0001	; "    8086"
+	cdecl	putc, .s1
+	cdecl	itoa,  8086, .s1, 8, 10, 0b0011	; "+   8086"
+	cdecl	putc, .s1
+	cdecl	itoa, -8086, .s1, 8, 10, 0b0001	; "-   8086"
+	cdecl	putc, .s1
+	cdecl	itoa,    -1, .s1, 8, 10, 0b0001	; "-      1"
+	cdecl	putc, .s1
+	cdecl	itoa,    -1, .s1, 8, 10, 0b0000	; "   65535"
+	cdecl	putc, .s1
+	cdecl	itoa,    -1, .s1, 8, 16, 0b0000	; "    FFFF"
+	cdecl	putc, .s1
+	cdecl	itoa,    12, .s1, 8,  2, 0b0100	; "00001100"
+	cdecl	putc, .s1
+
     ;--------------------
     ; - Terminate imp Proccess;
     ;--------------------    
@@ -64,7 +83,7 @@ ipl:
 ; - 0x0D is CR(Caridge Return).
 ;--------------------
 .s0 db "Booting...", 0x0A, 0x0D, 0
-.s1 db "-----", 0x0A, 0x0D, 0
+.s1 db "--------", 0x0A, 0x0D, 0
 
 ;--------------------
 ; - Place every 2 bytes.
@@ -81,7 +100,7 @@ BOOT:
 
 ;--------------------
 ; - Boot Flag.
-; - Myabe Reserve the first 512 bytes.
+; - Maybe Reserve the first 512 bytes.
 ; - Write 0x55 and 0xAA to 510bytes.
 ;--------------------
 times 510 - ($ - $$) db 0x00

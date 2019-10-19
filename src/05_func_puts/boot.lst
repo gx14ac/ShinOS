@@ -19,7 +19,7 @@
      9                              <1>         call %1
     10                              <1>     
     11                              <1>     %if 1 < %0
-    12                              <1>         add sp, (__BITS__ >> 3) * (%0 - 1)
+    12                              <1>         add sp, (__BITS__ >> 3) * (%0-1)
     13                              <1>     %endif
     14                              <1>     
     15                              <1> %endmacro
@@ -58,9 +58,9 @@
     43                                  
     44                                      ;---------------------
     45                                      ; - Saving Boot Drive.
-    46                                      ; - dl register is I/O register.
+    46                                      ; - dl register is I/O register. 
     47                                      ;---------------------
-    48 00000068 8816[8400]                  mov [BOOT.DRIVE], dl 
+    48 00000068 8816[A800]                  mov [BOOT.DRIVE], dl 
     49                                  
     50                                      ;--------------------
     51                                      ; - Call putc function, argument is '.s0'.
@@ -71,95 +71,262 @@
     53                              <1>  push %-1:-1
     53                              <1>  %rotate -1
     53                              <1>  %endrep
-    53 0000006C 68[7700]            <2>  push %-1:-1
+    53 0000006C 68[9200]            <2>  push %-1:-1
     53                              <2>  %rotate -1
     53                              <1>  %rotate -1
     53                              <1> 
-    53 0000006F E81400              <1>  call %1
+    53 0000006F E83800              <1>  call %1
     53                              <1> 
     53                              <1>  %if 1 < %0
-    53 00000072 83C402              <1>  add sp, (__BITS__ >> 3) * (%0 - 1)
+    53 00000072 83C402              <1>  add sp, (__BITS__ >> 3) * (%0-1)
     53                              <1>  %endif
     53                              <1> 
-    54                                      
-    55                                      ;--------------------
-    56                                      ; - Terminate imp Proccess;
-    57                                      ;--------------------    
-    58 00000075 EBFE                        jmp $               ; Infinite loop.
-    59                                  
-    60                                  ;--------------------
-    61                                  ; - 0x0A is LF(Line Feed).
-    62                                  ; - 0x0D is CR(Caridge Return).
-    63                                  ;--------------------
-    64 00000077 426F6F74696E672E2E-     .s0 db "Booting...", 0x0A, 0x0D, 0
-    64 00000080 2E0A0D00           
-    65                                  
-    66                                  ;--------------------
-    67                                  ; - Place every 2 bytes.
-    68                                  ;--------------------
-    69                                  ALIGN 2, db 0
-    70                                  BOOT:
-    71 00000084 0000                    .DRIVE  dw 0            ; drive number.
-    72                                  
-    73                                  ;--------------------
-    74                                  ; - Declaration Module.
-    75                                  ;--------------------
-    76                                  %include "../modules/real_mode/putc.asm"
+    54                                      cdecl itoa, 8086, .s1, 8, 10, 0b0001; "8086"
+    54                              <1> 
+    54                              <1>  %rep %0 - 1
+    54                              <1>  push %-1:-1
+    54                              <1>  %rotate -1
+    54                              <1>  %endrep
+    54 00000075 6A01                <2>  push %-1:-1
+    54                              <2>  %rotate -1
+    54 00000077 6A0A                <2>  push %-1:-1
+    54                              <2>  %rotate -1
+    54 00000079 6A08                <2>  push %-1:-1
+    54                              <2>  %rotate -1
+    54 0000007B 68[9F00]            <2>  push %-1:-1
+    54                              <2>  %rotate -1
+    54 0000007E 68961F              <2>  push %-1:-1
+    54                              <2>  %rotate -1
+    54                              <1>  %rotate -1
+    54                              <1> 
+    54 00000081 E84500              <1>  call %1
+    54                              <1> 
+    54                              <1>  %if 1 < %0
+    54 00000084 83C40A              <1>  add sp, (__BITS__ >> 3) * (%0-1)
+    54                              <1>  %endif
+    54                              <1> 
+    55                                      cdecl putc, .s1
+    55                              <1> 
+    55                              <1>  %rep %0 - 1
+    55                              <1>  push %-1:-1
+    55                              <1>  %rotate -1
+    55                              <1>  %endrep
+    55 00000087 68[9F00]            <2>  push %-1:-1
+    55                              <2>  %rotate -1
+    55                              <1>  %rotate -1
+    55                              <1> 
+    55 0000008A E81D00              <1>  call %1
+    55                              <1> 
+    55                              <1>  %if 1 < %0
+    55 0000008D 83C402              <1>  add sp, (__BITS__ >> 3) * (%0-1)
+    55                              <1>  %endif
+    55                              <1> 
+    56                                      
+    57                                      ;--------------------
+    58                                      ; - Terminate imp Proccess;
+    59                                      ;--------------------    
+    60 00000090 EBFE                        jmp $               ; Infinite loop.
+    61                                  
+    62                                  ;--------------------
+    63                                  ; - 0x0A is LF(Line Feed).
+    64                                  ; - 0x0D is CR(Caridge Return).
+    65                                  ;--------------------
+    66 00000092 426F6F74696E672E2E-     .s0 db "Booting...", 0x0A, 0x0D, 0
+    66 0000009B 2E0A0D00           
+    67 0000009F 2D2D2D2D2D0A0D00        .s1 db "-----", 0x0A, 0x0D, 0
+    68                                  
+    69                                  ;--------------------
+    70                                  ; - Place every 2 bytes.
+    71                                  ;--------------------
+    72 000000A7 00                      ALIGN 2, db 0
+    73                                  BOOT:
+    74 000000A8 0000                    .DRIVE  dw 0            ; drive number.
+    75                                  
+    76                                  ;--------------------
+    77                                  ; - Declaration Module.
+    78                                  ;--------------------
+    79                                  %include "../modules/real_mode/putc.asm"
      1                              <1> putc:
      2                              <1>     ;---------------------
      3                              <1>     ; Create Stack Frame.
      4                              <1>     ;---------------------
-     5 00000086 55                  <1>     push bp          ; push to stack base pointer register.
-     6 00000087 89E5                <1>     mov  bp, sp      ; bp = sp. set top stack.
+     5 000000AA 55                  <1>     push bp          ; push to stack base pointer register.
+     6 000000AB 89E5                <1>     mov  bp, sp      ; bp = sp. set top stack.
      7                              <1> 
      8                              <1>     ;---------------------
      9                              <1>     ; Saving Register.
     10                              <1>     ;---------------------
-    11 00000089 50                  <1>     push ax         ; ax (ah, al)
-    12 0000008A 53                  <1>     push bx         ; bx
-    13 0000008B 56                  <1>     push si         ; si
+    11 000000AD 50                  <1>     push ax         ; ax (ah, al)
+    12 000000AE 53                  <1>     push bx         ; bx
+    13 000000AF 56                  <1>     push si         ; si
     14                              <1> 
     15                              <1>     ;---------------------
     16                              <1>     ; Get func argument.
     17                              <1>     ;---------------------
-    18 0000008C 8B7604              <1>     mov si, [bp+4]
+    18 000000B0 8B7604              <1>     mov si, [bp+4]
     19                              <1> 
     20                              <1>     ;---------------------
     21                              <1>     ; Starting put process.
     22                              <1>     ;---------------------
-    23 0000008F B40E                <1>     mov ah, 0x0E    ; show Character output.
-    24 00000091 BB0000              <1>     mov bx, 0x0000  ; set page number & text color to 0
-    25 00000094 FC                  <1>     cld             ; DF = 0.
+    23 000000B3 B40E                <1>     mov ah, 0x0E    ; show Character output.
+    24 000000B5 BB0000              <1>     mov bx, 0x0000  ; set page number & text color to 0
+    25 000000B8 FC                  <1>     cld             ; DF = 0.
     26                              <1> 
     27                              <1> .10L:               ; do
     28                              <1>                     ; {
-    29 00000095 AC                  <1>     lodsb           ; AL = *SI++.
+    29 000000B9 AC                  <1>     lodsb           ; AL = *SI++.
     30                              <1>                     ;
-    31 00000096 3C00                <1>     cmp al, 0       ; if(0 == AL)
-    32 00000098 7404                <1>     je .10E         ; break
+    31 000000BA 3C00                <1>     cmp al, 0       ; if(0 == AL)
+    32 000000BC 7404                <1>     je .10E         ; break
     33                              <1>                     ;
-    34 0000009A CD10                <1>     int 0x10        ; Int10(0x0E, AL); prrint char.
-    35 0000009C EBF7                <1>     jmp .10L        ;
+    34 000000BE CD10                <1>     int 0x10        ; Int10(0x0E, AL); prrint char.
+    35 000000C0 EBF7                <1>     jmp .10L        ;
     36                              <1> .10E:               ; while(1)
     37                              <1> 
     38                              <1>     ;---------------------
     39                              <1>     ; return Register.
     40                              <1>     ;---------------------    
-    41 0000009E 5E                  <1>     pop si
-    42 0000009F 5B                  <1>     pop bx
-    43 000000A0 58                  <1>     pop ax
+    41 000000C2 5E                  <1>     pop si
+    42 000000C3 5B                  <1>     pop bx
+    43 000000C4 58                  <1>     pop ax
     44                              <1> 
     45                              <1>     ;---------------------
     46                              <1>     ; reset Stack frame.
     47                              <1>     ;---------------------
-    48 000000A1 89EC                <1>     mov sp, bp
-    49 000000A3 5D                  <1>     pop bp
-    50 000000A4 C3                  <1>     ret
-    77                                  
-    78                                  ;--------------------
-    79                                  ; - Boot Flag.
-    80                                  ; - Myabe Reserve the first 512 bytes.
-    81                                  ; - Write 0x55 and 0xAA to 510bytes.
+    48 000000C5 89EC                <1>     mov sp, bp
+    49 000000C7 5D                  <1>     pop bp
+    50 000000C8 C3                  <1>     ret
+    80                                  %include "../modules/real_mode/itoa.asm"
+     1                              <1> ;---------------------
+     2                              <1> ; - Variable display function.
+     3                              <1> ;---------------------
+     4                              <1> itoa:
+     5                              <1>     ;---------------------
+     6                              <1>     ; - Create Stack Frame.
+     7                              <1>     ;---------------------
+     8                              <1>                           ; +12 | flag.
+     9                              <1>                           ; +10 | base.
+    10                              <1>                           ; +8  | buffer size.
+    11                              <1>                           ; +6  | buffer address.
+    12                              <1>                           ; +4  | numeric.
+    13                              <1>                           ; +2  | return value.
+    14                              <1>                           ; +0  | base value.
+    15 000000C9 55                  <1>     push bp
+    16 000000CA 89E5                <1>     mov  bp, sp
+    17                              <1> 
+    18                              <1>     ;---------------------
+    19                              <1>     ; - Saving Register.
+    20                              <1>     ;---------------------
+    21 000000CC 50                  <1>     push ax               ; ax(ax, al)
+    22 000000CD 53                  <1>     push bx               ; bx is 
+    23 000000CE 51                  <1>     push cx               ; cx is counter register.
+    24 000000CF 52                  <1>     push dx               ; dx
+    25 000000D0 56                  <1>     push si               ; si is source index.
+    26 000000D1 57                  <1>     push di               ; di is destination index.
+    27                              <1> 
+    28                              <1>     ;---------------------
+    29                              <1>     ; - Get argments.
+    30                              <1>     ;---------------------
+    31 000000D2 8B4604              <1>     mov ax, [bp+4]             ; numeric.
+    32 000000D5 8B7606              <1>     mov si, [bp+6]             ; buffer address.
+    33 000000D8 8B4E08              <1>     mov cx, [bp+8]             ; buffer size.
+    34                              <1>          
+    35 000000DB 89F7                <1>     mov di, si                 ; di = &si. (si is source pointer.)
+    36 000000DD 01CF                <1>     add di, cx                 ; di = &di[cx -1]
+    37 000000DF 4F                  <1>     dec di                     ; decrement di.
+    38                              <1>          
+    39 000000E0 8B5E0C              <1>     mov bx, word [bp+12]       ; flags = options arg.
+    40                              <1>     
+    41                              <1>     ;---------------------
+    42                              <1>     ; - Signed handling.
+    43                              <1>     ;---------------------
+    44 000000E3 F7C30100            <1>     test bx, 0b0001            ; if(flags & 0x01), (test is 論理積)
+    45 000000E7 7408                <1> .10Q: je .10E                  ; { je is break (bx == 0)
+    46 000000E9 83F800              <1>     cmp ax, 0                  ; if (val < 0)
+    47 000000EC 7D03                <1> .12Q: jge .12E                 ; { (0より小さい場合)
+    48 000000EE 83CB02              <1>     or bx, 0b0010              ; bx = 2; 符号表示をさせるようにする
+    49                              <1> .12E:                          ; }
+    50                              <1> .10E:                          ; }
+    51                              <1> 
+    52                              <1>     ;---------------------
+    53                              <1>     ; - Sign output judgment.
+    54                              <1>     ;---------------------
+    55 000000F1 F7C30200            <1>     test bx, 0b0010            ; if(flags & 0x02)
+    56 000000F5 7410                <1> .20Q: je .20E                  ; {
+    57 000000F7 83F800              <1>     cmp ax, 0                  ; if(val < 0)
+    58 000000FA 7D07                <1> .22Q: jge .22F                 ; {
+    59 000000FC F7D8                <1>     neg ax                     ;     val *=-1; // 符号反転
+    60 000000FE C6042D              <1>     mov [si], byte'-'         ;     dst ='-'  // 符号表示
+    61 00000101 EB03                <1>     jmp .22E                   ; }
+    62                              <1> .22F:                          ; else
+    63                              <1>                                ; {
+    64 00000103 C6042B              <1>     mov [si], byte'+'         ; *dst = '+';
+    65                              <1> .22E:                          ; }
+    66 00000106 49                  <1>     dec cx                     ; size --; // 残りバッファサイズの計算
+    67                              <1> .20E:                          ; }
+    68                              <1> 
+    69                              <1>     ;---------------------
+    70                              <1>     ; - translate ascii.
+    71                              <1>     ;---------------------
+    72 00000107 8B5E0A              <1>     mov bx, [bp+10]            ; bx = 基数 (2 or 8 or 16)
+    73                              <1> .30L:                          ; do
+    74                              <1>                                ; {
+    75 0000010A BA0000              <1>     mov dx, 0                  ; dx = 0
+    76                              <1> 
+    77 0000010D F7F3                <1>     div bx                     ; DX = DX:AX % 基数 // 余
+    78                              <1>                                ; 算術レジスタに格納される.                             
+    79                              <1>                                ; AX = DX:AX / 基数 // 商
+    80 0000010F 89D6                <1>     mov si, dx                 ; si = dx
+    81 00000111 8A94[3901]          <1>     mov dl, byte [.ascii + si] ; DL = ASCII[DX] Dx is 余. 余をindexとしてつかう.
+    82                              <1>   
+    83 00000115 8815                <1>     mov [di], dl               ; *dst = DL. 文字列の代入
+    84 00000117 4F                  <1>     dec di                     ; dst--;
+    85                              <1>          
+    86 00000118 83F800              <1>     cmp ax, 0                  ; (ax == 0) or (ax == 0)
+    87 0000011B E0ED                <1>     loopnz .30L                ; } while (AX);
+    88                              <1> .30E:
+    89                              <1> 
+    90                              <1>     ;---------------------  
+    91                              <1>     ; - Remove space.  
+    92                              <1>     ;---------------------
+    93 0000011D 83F900              <1>     cmp cx, 0                  ; if(cx==0) cxのバッファサイズが０でなければ、空白を埋める.
+    94 00000120 740D                <1> .40Q: je .40E                  ; {
+    95 00000122 B000                <1>     mov al, ''                 ; AL = ''; ''で埋める
+    96 00000124 837E0C04            <1>     cmp [bp+12], word 0b0100   ; if(flags & 0x04)
+    97 00000128 7502                <1> .42Q: jne .42E                 ; {
+    98 0000012A B030                <1>     mov al, '0'                ; AL=0
+    99                              <1> .42E:                          ; }
+   100 0000012C FD                  <1>     std                        ; DF = 1 (-方向)
+   101                              <1>                                ; ストリームの方向を逆にする
+   102                              <1>                                ; カウンタレジスタ分文字列の空白を削除する
+   103 0000012D F3AA                <1>     rep stosb                  ; while(--CX) *DI-- = '';
+   104                              <1> .40E:                          ; }
+   105                              <1>       
+   106                              <1>     ;---------------------  
+   107                              <1>     ; - Return Register.  
+   108                              <1>     ;---------------------
+   109 0000012F 5F                  <1>     pop di
+   110 00000130 5E                  <1>     pop si
+   111 00000131 5A                  <1>     pop dx
+   112 00000132 59                  <1>     pop cx
+   113 00000133 5B                  <1>     pop bx
+   114 00000134 58                  <1>     pop ax
+   115                              <1> 
+   116                              <1>     ;---------------------  
+   117                              <1>     ; - Remove Stack Frame.  
+   118                              <1>     ;---------------------
+   119                              <1> 
+   120 00000135 89EC                <1>     mov sp, bp
+   121 00000137 5D                  <1>     pop bp
+   122 00000138 C3                  <1>     ret
+   123                              <1> 
+   124 00000139 303132333435363738- <1> .ascii db "0123456789ABCDEF"   ; transfer table.
+   124 00000142 39414243444546      <1>
+    81                                  
     82                                  ;--------------------
-    83 000000A5 00<rept>                times 510 - ($ - $$) db 0x00
-    84 000001FE 55AA                    db 0x55, 0xAA
+    83                                  ; - Boot Flag.
+    84                                  ; - Myabe Reserve the first 512 bytes.
+    85                                  ; - Write 0x55 and 0xAA to 510bytes.
+    86                                  ;--------------------
+    87 00000149 00<rept>                times 510 - ($ - $$) db 0x00
+    88 000001FE 55AA                    db 0x55, 0xAA
