@@ -4,7 +4,6 @@
 BOOT_LOAD equ 0x7c00    ; load to start boot program address.
 ORG BOOT_LOAD           ; instruction load address to assembler.
 
-
 ;---------------------
 ; - Declaration Macro.
 ;---------------------
@@ -44,6 +43,7 @@ ipl:
 
     ;---------------------
     ; - Saving Boot Drive.
+    ; - dl register is I/O register. 
     ;---------------------
     mov [BOOT.DRIVE], dl 
 
