@@ -1,7 +1,7 @@
 func_test:
     push bp             ; configuraton base address. like bp[0], bp[1], bp[2]...
     mov bp, sp          ; bp = sp;
-    sub sp, 2           ; -2 | short i; sub is subtract 
+    sub sp, 2           ; -2 | short i; sub is subtract
     push 0              ; - 4 | short j = 0 
 
     mov [bp-2], word 10 ; i = 10

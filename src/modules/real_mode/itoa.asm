@@ -1,3 +1,6 @@
+;---------------------
+; - Variable display function.
+;---------------------
 itoa:
     ;---------------------
     ; - Create Stack Frame.
@@ -15,34 +18,34 @@ itoa:
     ;---------------------
     ; - Saving Register.
     ;---------------------
-    push ax
-    push bx
-    push cx
-    push dx
-    push si
-    push di
+    push ax               ; ax(ax, al)
+    push bx               ; bx is 
+    push cx               ; cx is counter register.
+    push dx               ; dx
+    push si               ; si is source index.
+    push di               ; di is destination index.
 
     ;---------------------
     ; - Get argments.
     ;---------------------
-    mov ax, [bp+4]             ; val = numeric.
-    mov bx, [bp+6]             ; dst = buffer address.
-    mov cx, [bp+8]             ; size = remaining buffer size.
+    mov ax, [bp+4]             ; numeric.
+    mov bx, [bp+6]             ; buffer address.
+    mov cx, [bp+8]             ; buffer size.
          
-    mov di, si                 ; last buffer.
-    add di, cx                 ; dst = &dst[size -1]
-    dec di                     ;
+    mov di, si                 ; di = &si. (si is source pointer.)
+    add di, cx                 ; di = &di[cx -1]
+    dec di                     ; decrement di.
          
-    mov bx, word [bp+12]       ; flags = options.
+    mov bx, word [bp+12]       ; flags = options arg.
     
     ;---------------------
     ; - Signed handling.
     ;---------------------
-    test bx, 0b0001            ; if(flags & 0x01)
-.10Q: je .10E                  ; {
+    test bx, 0b0001            ; if(flags & 0x01), (test is 論理積)
+.10Q: je .10E                  ; { je is break (bx == 0)
     cmp ax, 0                  ; if (val < 0)
-.12Q: jge .12E                 ; {
-    or bx, 0b0010              ; flags |= 2; 符号表示
+.12Q: jge .12E                 ; { (0より小さい場合)
+    or bx, 0b0010              ; bx = 2; 符号表示をさせるようにする
 .12E:                          ; }
 .10E:                          ; }
 
@@ -66,26 +69,28 @@ itoa:
     ;---------------------
     ; - translate ascii.
     ;---------------------
-    mov bx, [bp+10]            ; bx = 基数
+    mov bx, [bp+10]            ; bx = 基数 (2 or 8 or 16)
 .30L:                          ; do
                                ; {
-    mov dx, 0                  ;
-    div bx                     ; DX = DK:AK % 基数
-                               ; AX = DX:AL / 基数
-    mov si, dx                 ; // Reference Table.
-    mov dl, byte [.ascii + si] ; DL = ASCII[DX]
+    mov dx, 0                  ; dx = 0
+
+    div bx                     ; DX = DX:AX % 基数 // 余
+                               ; 算術レジスタに格納される.                             
+                               ; AX = DX:AX / 基数 // 商
+    mov si, dx                 ; si = dx
+    mov dl, byte [.ascii + si] ; DL = ASCII[DX] Dx is 余. 余をindexとしてつかう.
   
-    mov [di], dl               ; *dst = DL;
+    mov [di], dl               ; *dst = DL. 文字列の代入
     dec di                     ; dst--;
          
-    cmp ax, 0                  ;
+    cmp ax, 0                  ; (ax == 0) or (ax == 0)
     loopnz .30L                ; } while (AX);
 .30E:
 
     ;---------------------  
     ; - Remove space.  
-    ;---------------------  
-    cmp cx, 0  
+    ;---------------------
+    cmp cx, 0                  ; if(cx==0) cxのバッファサイズが０でなければ、空白を埋める.
 .40Q: je .40E                  ; {
     mov al, ''                 ; AL = ''; ''で埋める
     cmp [bp+12], word 0b0100   ; if(flags & 0x04)
@@ -93,6 +98,8 @@ itoa:
     mov al, '0'                ; AL=0
 .42E:                          ; }
     std                        ; DF = 1 (-方向)
+                               ; ストリームの方向を逆にする
+                               ; カウンタレジスタ分文字列の空白を削除する
     rep stosb                  ; while(--CX) *DI-- = '';
 .40E                           ; }
       
