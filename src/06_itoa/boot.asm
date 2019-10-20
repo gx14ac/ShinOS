@@ -2,7 +2,7 @@
 ; - Configration Start to Boot Program Address.
 ;---------------------
 BOOT_LOAD equ 0x7c00    ; load to start boot program address.
-ORG BOOT_LOAD           ; instruction load address to assembler.
+ORG       BOOT_LOAD     ; instruction load address to assembler.
 
 ;---------------------
 ; - Declaration Macro.
@@ -23,7 +23,7 @@ entry:
 ipl:
     cli                 ; disable interrupt.
 
-    ;-------------------
+    ;------------------
     ; - Configuration Segment Register.
     ; - Segment is separate memory blocks.
     ; - Initialize Register.
@@ -43,9 +43,9 @@ ipl:
 
     ;---------------------
     ; - Saving Boot Drive.
-    ; - dl register is I/O register. 
+    ; - dl register is I/O register.
     ;---------------------
-    mov [BOOT.DRIVE], dl 
+    mov [BOOT.DRIVE], dl
 
     ;--------------------
     ; - Call putc function, argument is '.s0'.
@@ -58,24 +58,24 @@ ipl:
     ; cdecl itoa, 8086, .s1, 8, 10, 0b0001; "8086"
     ; cdecl putc, .s1
 
-	cdecl	itoa,  8086, .s1, 8, 10, 0b0001	; "    8086"
-	cdecl	putc, .s1
-	cdecl	itoa,  8086, .s1, 8, 10, 0b0011	; "+   8086"
-	cdecl	putc, .s1
-	cdecl	itoa, -8086, .s1, 8, 10, 0b0001	; "-   8086"
-	cdecl	putc, .s1
-	cdecl	itoa,    -1, .s1, 8, 10, 0b0001	; "-      1"
-	cdecl	putc, .s1
-	cdecl	itoa,    -1, .s1, 8, 10, 0b0000	; "   65535"
-	cdecl	putc, .s1
-	cdecl	itoa,    -1, .s1, 8, 16, 0b0000	; "    FFFF"
-	cdecl	putc, .s1
-	cdecl	itoa,    12, .s1, 8,  2, 0b0100	; "00001100"
-	cdecl	putc, .s1
+cdecl	itoa,  8086, .s1, 8, 10, 0b0001	; "    8086"
+cdecl	putc, .s1
+cdecl	itoa,  8086, .s1, 8, 10, 0b0011	; "+   8086"
+cdecl	putc, .s1
+cdecl	itoa, -8086, .s1, 8, 10, 0b0001	; "-   8086"
+cdecl	putc, .s1
+cdecl	itoa,    -1, .s1, 8, 10, 0b0001	; "-      1"
+cdecl	putc, .s1
+cdecl	itoa,    -1, .s1, 8, 10, 0b0000	; "   65535"
+cdecl	putc, .s1
+cdecl	itoa,    -1, .s1, 8, 16, 0b0000	; "    FFFF"
+cdecl	putc, .s1
+cdecl	itoa,    12, .s1, 8,  2, 0b0100	; "00001100"
+cdecl	putc, .s1
 
     ;--------------------
     ; - Terminate imp Proccess;
-    ;--------------------    
+    ;--------------------
     jmp $               ; Infinite loop.
 
 ;--------------------
@@ -83,7 +83,7 @@ ipl:
 ; - 0x0D is CR(Caridge Return).
 ;--------------------
 .s0 db "Booting...", 0x0A, 0x0D, 0
-.s1 db "--------", 0x0A, 0x0D, 0
+.s1 db "--------",   0x0A, 0x0D, 0
 
 ;--------------------
 ; - Place every 2 bytes.
