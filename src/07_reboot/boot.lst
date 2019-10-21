@@ -1,0 +1,183 @@
+     1                                  ;---------------------
+     2                                  ; - Configration Start to Boot Program Address.
+     3                                  ;---------------------
+     4                                  BOOT_LOAD equ 0x7c00    ; load to start boot program address.
+     5                                  ORG       BOOT_LOAD     ; instruction load address to assembler.
+     6                                  
+     7                                  ;---------------------
+     8                                  ; - Declaration Macro.
+     9                                  ;---------------------
+    10                                  %include "../include/macro.asm"
+     1                              <1> %macro cdecl 1-*.nolist
+     2                              <1> 
+     3                              <1>     %rep %0 - 1
+     4                              <1>         push %{-1:-1}
+     5                              <1>         %rotate -1
+     6                              <1>     %endrep
+     7                              <1>     %rotate -1
+     8                              <1> 
+     9                              <1>         call %1
+    10                              <1>     
+    11                              <1>     %if 1 < %0
+    12                              <1>         add sp, (__BITS__ >> 3) * (%0-1)
+    13                              <1>     %endif
+    14                              <1>     
+    15                              <1> %endmacro
+    11                                  
+    12                                  entry:
+    13                                      ;---------------------
+    14                                      ; - BPB(BIOS Parameter Block).
+    15                                      ; - First calling to ipl label.
+    16                                      ; - BIOS Needs Information.
+    17                                      ; - 0x90 set to 90bytes.
+    18                                      ; - NOP(do no something).
+    19                                      ;---------------------
+    20 00000000 EB58                        jmp   ipl
+    21 00000002 90<rept>                    times 90 - ($ - $$) db 0x90
+    22                                  
+    23                                  ipl:
+    24 0000005A FA                          cli                 ; disable interrupt.
+    25                                  
+    26                                      ;------------------
+    27                                      ; - Configuration Segment Register.
+    28                                      ; - Segment is separate memory blocks.
+    29                                      ; - Initialize Register.
+    30                                      ;-------------------
+    31 0000005B B80000                      mov ax, 0x0000      ; AX = 0x0000;
+    32                                  
+    33 0000005E 8ED8                        mov ds, ax          ; DS = 0x0000;
+    34 00000060 8EC0                        mov es, ax          ; ES = 0x0000;
+    35 00000062 8ED0                        mov ss, ax          ; SS = 0x0000;
+    36                                  
+    37                                      ;---------------------
+    38                                      ; - Stack the boot program start position on the stack pointer.
+    39                                      ;---------------------
+    40 00000064 BC007C                      mov sp, BOOT_LOAD    ; SP = 0x7c00;
+    41                                  
+    42 00000067 FB                          sti                 ; enable interrupt.
+    43                                  
+    44                                      ;---------------------
+    45                                      ; - Saving Boot Drive.
+    46                                      ; - dl register is I/O register.
+    47                                      ;---------------------
+    48 00000068 8816[9200]                  mov [BOOT.DRIVE], dl
+    49                                  
+    50                                      ;--------------------
+    51                                      ; - Call putc function, argument is '.s0'.
+    52                                      ;--------------------
+    53 0000006C 68[7A00]E8220083C4-         cdecl putc, .s0
+    53 00000074 02                 
+    54                                  
+    55 00000075 E83B00                      cdecl reboot
+    56                                  
+    57                                      ;--------------------
+    58                                      ; - Terminate imp Proccess;
+    59                                      ;--------------------
+    60 00000078 EBFE                        jmp $               ; Infinite loop.
+    61                                  
+    62                                  ;--------------------
+    63                                  ; - 0x0A is LF(Line Feed).
+    64                                  ; - 0x0D is CR(Caridge Return).
+    65                                  ;--------------------
+    66 0000007A 426F6F74696E672E2E-     .s0 db "Booting...", 0x0A, 0x0D, 0
+    66 00000083 2E0A0D00           
+    67 00000087 2D2D2D2D2D2D2D2D0A-     .s1 db "--------",   0x0A, 0x0D, 0
+    67 00000090 0D00               
+    68                                  
+    69                                  ;--------------------
+    70                                  ; - Place every 2 bytes.
+    71                                  ;--------------------
+    72                                  ALIGN 2, db 0
+    73                                  BOOT:
+    74 00000092 0000                    .DRIVE:   dw 0            ; drive number.
+    75                                  
+    76                                  ;--------------------
+    77                                  ; - Declaration Module.
+    78                                  ;--------------------
+    79                                  %include "../modules/real_mode/putc.asm"
+     1                              <1> putc:
+     2                              <1>     ;---------------------
+     3                              <1>     ; Create Stack Frame.
+     4                              <1>     ;---------------------
+     5 00000094 55                  <1>     push bp          ; push to stack base pointer register.
+     6 00000095 89E5                <1>     mov  bp, sp      ; bp = sp. set top stack.
+     7                              <1> 
+     8                              <1>     ;---------------------
+     9                              <1>     ; Saving Register.
+    10                              <1>     ;---------------------
+    11 00000097 50                  <1>     push ax         ; ax (ah, al)
+    12 00000098 53                  <1>     push bx         ; bx
+    13 00000099 56                  <1>     push si         ; si
+    14                              <1> 
+    15                              <1>     ;---------------------
+    16                              <1>     ; Get func argument.
+    17                              <1>     ;---------------------
+    18 0000009A 8B7604              <1>     mov si, [bp + 4]
+    19                              <1> 
+    20                              <1>     ;---------------------
+    21                              <1>     ; Starting put process.
+    22                              <1>     ;---------------------
+    23 0000009D B40E                <1>     mov ah, 0x0E    ; show Character output.
+    24 0000009F BB0000              <1>     mov bx, 0x0000  ; set page number & text color to 0
+    25 000000A2 FC                  <1>     cld             ; DF = 0.
+    26                              <1> 
+    27                              <1> .10L:               ; do
+    28                              <1>                     ; {
+    29 000000A3 AC                  <1>     lodsb           ; AL = *SI++.
+    30                              <1>                     ;
+    31 000000A4 3C00                <1>     cmp al, 0       ; if(0 == AL)
+    32 000000A6 7404                <1>     je .10E         ; break
+    33                              <1>                     ;
+    34 000000A8 CD10                <1>     int 0x10        ; Int10(0x0E, AL); prrint char.
+    35 000000AA EBF7                <1>     jmp .10L        ;
+    36                              <1> .10E:               ; while(1)
+    37                              <1> 
+    38                              <1>     ;---------------------
+    39                              <1>     ; return Register.
+    40                              <1>     ;---------------------    
+    41 000000AC 5E                  <1>     pop si
+    42 000000AD 5B                  <1>     pop bx
+    43 000000AE 58                  <1>     pop ax
+    44                              <1> 
+    45                              <1>     ;---------------------
+    46                              <1>     ; reset Stack frame.
+    47                              <1>     ;---------------------
+    48 000000AF 89EC                <1>     mov sp, bp
+    49 000000B1 5D                  <1>     pop bp
+    50 000000B2 C3                  <1>     ret
+    80                                  %include "../modules/real_mode/reboot.asm"
+     1                              <1> reboot:
+     2                              <1>     ;; Show Message.
+     3 000000B3 68[CF00]E8DBFF83C4- <1>     cdecl putc, .s0             ; Show Rebooting Message.
+     3 000000BB 02                  <1>
+     4                              <1> 
+     5                              <1>     ;; Waiting for keyboard.
+     6                              <1> .10L:                           ; do
+     7                              <1>                                 ; {
+     8 000000BC B410                <1>     mov ah, 0x10                ; // Wating for input keyboard.
+     9 000000BE CD16                <1>     int 0x16                    ; // AL = BIOS(0x16, 0x10)
+    10                              <1>                                 ;
+    11 000000C0 3C00                <1>     cmp al, ''                  ; ZF == AL == '';
+    12 000000C2 75F8                <1>     jne .10L                    ; } while(ZF)
+    13                              <1> 
+    14                              <1>     ;; Return Space.
+    15 000000C4 68[ED00]E8CAFF83C4- <1>     cdecl putc, .s1
+    15 000000CC 02                  <1>
+    16                              <1> 
+    17                              <1>     ;; Reboot.
+    18 000000CD CD19                <1>     int 0x19                    ; BIOS(0x19); reboot()
+    19                              <1> 
+    20                              <1>     ;; Character Data.
+    21 000000CF 0A0D50757368205350- <1> .s0 db 0x0A, 0x0D, "Push SPACE key to reboot...", 0
+    21 000000D8 414345206B65792074- <1>
+    21 000000E1 6F207265626F6F742E- <1>
+    21 000000EA 2E2E00              <1>
+    22 000000ED 0A0D0A0D00          <1> .s1 db 0x0A, 0x0D, 0x0A, 0x0D, 0
+    81                                  
+    82                                  ;--------------------
+    83                                  ; - Boot Flag.
+    84                                  ; - Maybe Reserve the first 512 bytes.
+    85                                  ; - Write 0x55 and 0xAA to 510bytes.
+    86                                  ;--------------------
+    87 000000F2 00<rept>                times 510 - ($ - $$) db 0x00
+    88 000001FE 55AA                    db    0x55, 0xAA
