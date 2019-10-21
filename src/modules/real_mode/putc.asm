@@ -15,7 +15,7 @@ putc:
     ;---------------------
     ; Get func argument.
     ;---------------------
-    mov si, [bp+4]
+    mov si, [bp + 4]
 
     ;---------------------
     ; Starting put process.
