@@ -7,9 +7,9 @@
     %rotate -1
 
         call %1
-    
+
     %if 1 < %0
         add sp, (__BITS__ >> 3) * (%0-1)
     %endif
-    
+
 %endmacro

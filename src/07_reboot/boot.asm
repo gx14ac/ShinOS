@@ -49,6 +49,7 @@ ipl:
 
     ;--------------------
     ; - Call putc function, argument is '.s0'.
+    ; - Call reboot function, nothing argument.
     ;--------------------
     cdecl putc, .s0
 
