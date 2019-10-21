@@ -17,7 +17,7 @@ entry:
     ; - 0x90 set to 90bytes.
     ; - NOP(do no something).
     ;---------------------
-    jmp ipl
+    jmp   ipl
     times 90 - ($ - $$) db 0x90
 
 ipl:
@@ -90,7 +90,7 @@ cdecl	putc, .s1
 ;--------------------
 ALIGN 2, db 0
 BOOT:
-.DRIVE  dw 0            ; drive number.
+.DRIVE   dw 0            ; drive number.
 
 ;--------------------
 ; - Declaration Module.
@@ -104,4 +104,4 @@ BOOT:
 ; - Write 0x55 and 0xAA to 510bytes.
 ;--------------------
 times 510 - ($ - $$) db 0x00
-db 0x55, 0xAA
+db    0x55, 0xAA
