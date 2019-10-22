@@ -18,5 +18,7 @@ reboot:
     int 0x19                    ; BIOS(0x19); reboot()
 
     ;; Character Data.
+    ;; .s0 is character value.
+    ;; .s1 is new line.
 .s0 db 0x0A, 0x0D, "Push SPACE key to reboot...", 0
 .s1 db 0x0A, 0x0D, 0x0A, 0x0D, 0
