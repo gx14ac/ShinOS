@@ -15,7 +15,7 @@ memcpy:
     pop edi           ; back to edi register.
     pop esi           ; back to esi register.
     pop ecx           ; back to ecx register.
-    
+
     mov esp, ebp      ; esp = ebp // espレジスタの値をこれまで基準としていた、ebpレジスタの値に設定し直す
     pop ebp           ; ebpレジスタの値を取り出す
     ret

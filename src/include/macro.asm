@@ -13,3 +13,10 @@
     %endif
 
 %endmacro
+
+struc drive
+        .no   resw  1               ; Drive Number.
+        .cyln resw  1               ; Cylinder.
+        .head resw  1               ; Head.
+        .sect resw  1               ; Sector.
+endstruc
