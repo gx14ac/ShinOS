@@ -54,34 +54,28 @@ ipl:
     cdecl putc, .s0
 
     ;--------------------
-    ; - Reading Next 521 bytes.
+    ; - Reading Next 512 bytes.
+    ; - CHS
     ;--------------------
-    mov ah, 0x02
-    mov al, 1
-    mov cx, 0x0002
-    mov dh, 0x00
-    mov dl, [BOOT.DRIVE]
-    mov bx, 0x7C00 + 512
-    int 0x13
-.10Q: jnc .10E
-.10T: cdecl putc, .e0
+    mov ah, 0x02                ; 0x02 is reading order.
+    mov al, 1                   ; al = Reading sector number.
+    mov cx, 0x0002              ; cx = Cylinder / Sector
+    mov dh, 0x00                ; dh = Head position.
+    mov dl, [BOOT.DRIVE]        ; dl = Drive Number.
+    mov bx, 0x7C00 + 512        ; BX = Offset.
+    int 0x13                    ; 0x13 is BIOS Call.
+.10Q: jnc .10E                  ; (0x13 == 0x02(ah??))
+.10T: cdecl putc, .e0           ; start failure.
     call reboot
-.10E:
+.10E:                           ; start succeded.
     jmp stage_2
-
-    cdecl reboot
-
-    ;--------------------
-    ; - Terminate imp Proccess;
-    ;--------------------
-    jmp $               ; Infinite loop.
 
 ;--------------------
 ; - 0x0A is LF(Line Feed).
 ; - 0x0D is CR(Caridge Return).
 ;--------------------
 .s0 db "Booting...", 0x0A, 0x0D, 0
-.e0 db "Error sector read", 0
+.e0 db "Error sector read.", 0
 
 
 ;--------------------
@@ -115,6 +109,7 @@ stage_2:
 
 .s0 db "2nd stage...", 0x0A, 0x0D, 0
     ;---------------------
-    ;- second stage.
+    ; - second stage.
+    ; - configuration boot program size.
     ;---------------------
     times(1024 * 8) - ($ - $$) db 0 ; 8K byte
