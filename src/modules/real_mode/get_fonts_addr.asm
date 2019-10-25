@@ -20,16 +20,17 @@ get_font_addr:
     push bp
 
     ;----------------------
-    ; - Get font addr.
+    ; - Get arg.
+    ; - Saving font addr.
     ;----------------------
-    mov si, [bp + 4]
+    mov si, [bp + 4]            ; si = Font address(bp+4)
 
     ;----------------------
     ; - Get font addr.
     ;----------------------
-    mov ax, 0x1130
-    mov bh, 0x06
-    int 10h
+    mov ax, 0x1130              ; ax = Font addr.
+    mov bh, 0x06                ; bh = 8x16 font(vga/mcga). size.
+    int 10h                     ; es:bp(segment:offset) = Fontaddr.
 
     ;----------------------
     ; - Saving Font addr.
