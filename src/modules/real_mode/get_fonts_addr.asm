@@ -28,7 +28,7 @@ get_font_addr:
     ;----------------------
     ; - Get font addr.
     ;----------------------
-    mov ax, 0x1130              ; ax = Font addr.
+    mov ax, 0x1130              ; ax = Fontaddr.
     mov bh, 0x06                ; bh = 8x16 font(vga/mcga). size.
     int 10h                     ; es:bp(segment:offset) = Fontaddr.
 

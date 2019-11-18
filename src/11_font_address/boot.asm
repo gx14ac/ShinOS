@@ -107,15 +107,15 @@ stage_2:
         cdecl putc, .s1
         jmp stage_3
 
-.s0 db "2nd stage...", 0x0A, 0x0D, 0
+.s0: db "2nd stage...", 0x0A, 0x0D, 0
 
-.s1 db "Drive:0x"
-.p1 db " , C:0x"
-.p2 db "   , H:0x"
-.p3 db "  , S:0x"
-.p4 db " ", 0x0A, 0x0D, 0
+.s1: db "Drive:0x"
+.p1: db " , C:0x"
+.p2: db "   , H:0x"
+.p3: db "  , S:0x"
+.p4: db " ", 0x0A, 0x0D, 0
 
-.e0 db "Can't get drive parameter.", 0
+.e0: db "Can't get drive parameter.", 0
     ;---------------------
     ; - Padding.
     ; - This File is 8k bytes.
@@ -135,8 +135,8 @@ stage_3:
 
     jmp $
 
-.s0 db "3rd stage...", 0x0A, 0x0D, 0
-.s1 db "Font Address="
-.p1 db "ZZZZ"
-.p2 db "ZZZZ", 0x0A, 0x0D, 0
-    db 0x0A, 0x0D, 0
+.s0: db "3rd stage...", 0x0A, 0x0D, 0
+.s1: db "Font Address="
+.p1: db "ZZZZ:"
+.p2: db "ZZZZ", 0x0A, 0x0D, 0
+   db 0x0A, 0x0D, 0
