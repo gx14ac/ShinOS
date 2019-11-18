@@ -8,7 +8,7 @@ get_font_addr:
     ;; BP + 0 | Base Position.
 
     push bp
-    push bp, sp
+    mov  bp, sp
 
     ;----------------------
     ; - Saving Register.
