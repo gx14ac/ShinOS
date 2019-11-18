@@ -121,8 +121,6 @@ stage_2:
     ; - This File is 8k bytes.
     ;---------------------
 
-    times BOOT_SIZE - ($ - $$) db -0
-
 stage_3:
     ; show fonts.
     cdecl putc, .s0
@@ -139,4 +137,6 @@ stage_3:
 .s1: db "Font Address="
 .p1: db "ZZZZ:"
 .p2: db "ZZZZ", 0x0A, 0x0D, 0
-   db 0x0A, 0x0D, 0
+    db 0x0A, 0x0D, 0
+
+times BOOT_SIZE - ($ - $$) db -0
