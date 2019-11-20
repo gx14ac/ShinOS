@@ -14,6 +14,7 @@ get_memory_info:
     push di
     push bp
 
+    cdecl putc, .s0
     mov bp, 0                   ; lines = 0
     mov ebx, 0                  ; index = 0
 .10L:
@@ -23,41 +24,41 @@ get_memory_info:
     mov di, .b0                 ; ES:DI = Buffer
     int 0x15                    ; BIOS(0x15, eax) = Get Memory Information.
 
-    cmp eax, 'PAMS'
-    je .12E
-    jmp .10E
+    cmp eax, 'PAMS'             ; if (eax == SMAP)
+    je .12E                     ; true
+    jmp .10E                    ; false
 .12E:
-    jnc .14E
-    jmp .10E
+    jnc .14E                    ; if(CF). jnc is comapare CF flag.
+    jmp .10E                    ; break
 .14E:
     cdecl put_memory_info, di      ; show the just one memory record.
     ; Get address for ACPI data.
     mov eax, [di + 16]          ; eax = record
-    cmp eax, 3
-    jne .15E
+    cmp eax, 3                  ; if (eax == 3)
+    jne .15E                    ; (eax != 3)
 
     mov eax, [di + 0]           ; eax = base addr.
     mov [ACPI_DATA.adr], eax    ; saving base addr.
     mov eax, [di + 8]           ; eax = addr length.
     mov [ACPI_DATA.len], eax    ; saving addr length.
 .15E:
-    cmp ebx, 0
-    jz .16E
+    cmp ebx, 0                  ; ebx
+    jz .16E                     ; (ebx == 0)
 
-    inc bp
-    and bp, 0x07
-    jnz .16E
+    inc bp                      ; lines++
+    and bp, 0x07                ; lines &= 0x07
+    jnz .16E                    ; (ebx != 0)
 
     cdecl putc, .s2
 
-    mov ah, 0x10
-    int 0x16
+    mov ah, 0x10                ; waiting for input key
+    int 0x16                    ; AL = BIOS(0x16, 0x10)
 
-    cdecl putc, .s3
+    cdecl putc, .s3             ; delete cancel message.
 .16E:
     cmp ebx, 0
-    jne .10L
-.10E:
+    jne .10L                    ; (ebx != 0)
+.10E:                           ; while(0 == EBX)
     cdecl putc, .s1
 
     pop bp
