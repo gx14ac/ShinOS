@@ -37,3 +37,34 @@ write_kbc_data:
     pop bp
 
     ret
+
+read_kbc_date:
+    push bp
+    mov bp, sp
+
+    push cx
+
+    mov cx, 0
+.10L:
+    in al, 0x64
+    test al, 0x01
+    loopnz .10L
+
+    cmp cx, 0
+    jz .20E
+    mov ah, 0x00                ;
+    in al, 0x60
+
+    mov di, [bp + 4]
+    mov [di + 0], ax
+
+.20E:
+
+    mov ax, cx
+
+    pop cx
+
+    mov sp, bp
+    pop bp
+
+    ret
