@@ -51,11 +51,11 @@ write_kbc_data:
 
 read_kbc_data:
     push bp
-    mov bp, sp
+    mov  bp, sp
 
     push cx
 
-    mov cx, 0
+    mov  cx, 0
 .10L:
     in al, 0x64                 ; al = inp(0x64) get KBC Status.
     test al, 0x01               ; ZF = al & 0x01
@@ -72,6 +72,7 @@ read_kbc_data:
 
     mov ax, cx                  ; ax = cx
 
+    pop di
     pop cx
 
     mov sp, bp
@@ -94,14 +95,14 @@ read_kbc_data:
 write_kbc_command:
 
     push bp
-    mov bp, sp
+    mov  bp, sp
 
     push cx
 
-    mov cx, 10
+    mov  cx, 0
 .10L:
-    in al, 0x64
-    test al, 0x02
+    in      al, 0x64
+    test    al, 0x02
     loopnz .10L
 
     cmp cx, 0

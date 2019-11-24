@@ -173,7 +173,7 @@ stage_3:
     cdecl putc, .s2
 .10E:
 
-  jmp $
+    jmp stage_4
 
 .s0: db "3rd stage...", 0x0A, 0x0D, 0
 .s1: db "Font Address="
@@ -215,4 +215,4 @@ stage_4:
 ;*******************************
 ; Padding
 ;*******************************
-times BOOT_SIZE - ($ - $$) db -0
+times BOOT_SIZE - ($ - $$) db 0
