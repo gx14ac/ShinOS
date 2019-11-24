@@ -49,7 +49,7 @@ write_kbc_data:
 ; ** return values    : success(Expect 0), failure(0)
 ;*********************************************************************
 
-read_kbc_date:
+read_kbc_data:
     push bp
     mov bp, sp
 
