@@ -46,21 +46,20 @@ read_kbc_date:
 
     mov cx, 0
 .10L:
-    in al, 0x64
-    test al, 0x01
-    loopnz .10L
+    in al, 0x64                 ; al = inp(0x64) get KBC Status.
+    test al, 0x01               ; ZF = al & 0x01
+    loopnz .10L                 ; while (--cx && !ZF)
 
-    cmp cx, 0
-    jz .20E
-    mov ah, 0x00                ;
-    in al, 0x60
+    cmp cx, 0                   ; if (CX)
+    jz .20E                     ; {
+    mov ah, 0x00
+    in al, 0x60                 ; al = inp(0x60). 0x60 is DataRegister
 
-    mov di, [bp + 4]
-    mov [di + 0], ax
+    mov di, [bp + 4]            ; di = addr
+    mov [di + 0], ax            ; DI[0] = ax
+.20E:                           ; }
 
-.20E:
-
-    mov ax, cx
+    mov ax, cx                  ; ax = cx
 
     pop cx
 
