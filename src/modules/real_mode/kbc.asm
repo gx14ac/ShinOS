@@ -38,6 +38,17 @@ write_kbc_data:
 
     ret
 
+;*********************************************************************
+;    Read Ouput Buffer of KBC
+;=====================================================================
+; ** Format           : word read_kbc_data(data);
+;
+; ** Arguments
+;     data            : read data address.
+;
+; ** return values    : success(Expect 0), failure(0)
+;*********************************************************************
+
 read_kbc_date:
     push bp
     mov bp, sp
@@ -60,6 +71,46 @@ read_kbc_date:
 .20E:                           ; }
 
     mov ax, cx                  ; ax = cx
+
+    pop cx
+
+    mov sp, bp
+    pop bp
+
+    ret
+
+
+;*********************************************************************
+;    Output KBC Commands.
+;=====================================================================
+; ** Format           : word write_kbc_command(data);
+;
+; ** Arguments
+;     data            : write data.
+;
+; ** return values    : success(Expect 0), failure(0)
+;*********************************************************************
+
+write_kbc_command:
+
+    push bp
+    mov bp, sp
+
+    push cx
+
+    mov cx, 10
+.10L:
+    in al, 0x64
+    test al, 0x02
+    loopnz .10L
+
+    cmp cx, 0
+    jz .20E
+
+    mov al, [bp + 4]            ; al = command.
+    out 0x64, al                ; outp(0x64, al)
+.20E:
+    mov ax, cx
 
     pop cx
 
