@@ -15,6 +15,7 @@ get_memory_info:
     push bp
 
     cdecl putc, .s0
+
     mov bp, 0                   ; lines = 0
     mov ebx, 0                  ; index = 0
 .10L:
@@ -25,7 +26,7 @@ get_memory_info:
     int 0x15                    ; BIOS(0x15, eax) = Get Memory Information.
 
     cmp eax, 'PAMS'             ; if (eax == SMAP)
-    je .12E                     ; true
+    je  .12E                     ; true
     jmp .10E                    ; false
 .12E:
     jnc .14E                    ; if(CF). jnc is comapare CF flag.
@@ -70,22 +71,21 @@ get_memory_info:
     pop eax
 
     ret
-
-.s0: db "E820 Memory Map:", 0x0A, 0x0D
-     db " Base_____________ Length_____________ Type___", 0x0A, 0x0D, 0
-.s1: db "----------------- ------------------- -------", 0x0A, 0x0D, 0
-.s2: db " <more...>", 0
-.s3: db 0x0D, "        ", 0x0D, 0
+.s0:	db " E820 Memory Map:", 0x0A, 0x0D
+        db " Base_____________ Length___________ Type____", 0x0A, 0x0D, 0
+.s1:	db " ----------------- ----------------- --------", 0x0A, 0x0D, 0
+.s2:	db " <more...>", 0
+.s3:	db 0x0D, "          ", 0x0D, 0
 
 ALIGN 4, db 0
-.b0:    times E820_RECORD_SIZE db 0
+.b0:	times E820_RECORD_SIZE db 0
 
 put_memory_info:
     ;----------------------
     ; [Create Stack Frame]
     ;----------------------
     push bp
-    mov bp, sp
+    mov  bp, sp
 
     push bx
     push si
@@ -113,13 +113,14 @@ put_memory_info:
 
     ; Type(32bit)
     cdecl itoa, word[si + 18], .p6 + 0, 4, 16, 0b0100
-    cdecl itoa, word[si + 16], .p2 + 4, 4, 16, 0b0100
+    cdecl itoa, word[si + 16], .p6 + 4, 4, 16, 0b0100
 
     cdecl putc, .s1
 
     mov bx, [si + 16]
     and bx, 0x07
     shl bx, 1
+    add bx, .t0
     cdecl putc, word[bx]
 
     pop si
@@ -130,18 +131,18 @@ put_memory_info:
 
     ret
 
-.s1: db " "
-.p2: db "ZZZZZZZZ_"
-.p3: db "ZZZZZZZZ "
-.p4: db "ZZZZZZZZ_"
-.p5: db "ZZZZZZZZ "
-.p6: db "ZZZZZZZZ", 0
+.s1:	db " "
+.p2:	db "ZZZZZZZZ_"
+.p3:	db "ZZZZZZZZ "
+.p4:	db "ZZZZZZZZ_"
+.p5:	db "ZZZZZZZZ "
+.p6:	db "ZZZZZZZZ", 0
 
-.s4: db " (Unknown)", 0x0A, 0x0D, 0
-.s5: db " (usable)", 0x0A, 0x0D, 0
-.s6: db " (reserved)", 0x0A, 0x0D, 0
-.s7: db " (ACPI data)", 0x0A, 0x0D, 0
-.s8: db " (ACPI NVS)", 0x0A, 0x0D, 0
-.s9: db " (bad memory)", 0x0A, 0x0D, 0
+.s4:	db " (Unknown)", 0x0A, 0x0D, 0
+.s5:	db " (usable)", 0x0A, 0x0D, 0
+.s6:	db " (reserved)", 0x0A, 0x0D, 0
+.s7:	db " (ACPI data)", 0x0A, 0x0D, 0
+.s8:	db " (ACPI NVS)", 0x0A, 0x0D, 0
+.s9:	db " (bad memory)", 0x0A, 0x0D, 0
 
-.t0: dw .s4, .s5, .s6, .s7, .s8, .s9, .s4, .s4
+.t0:	dw .s4, .s5, .s6, .s7, .s8, .s9, .s4, .s4
