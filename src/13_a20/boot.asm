@@ -68,7 +68,7 @@ ipl:
 ALIGN 2, db 0
 BOOT:
     istruc drive
-        at drive.no,   dw 0
+        at drive.no,    dw 0
         at drive.cyln,  dw 0
         at drive.head,  dw 0
         at drive.sect,  dw 2
@@ -136,15 +136,16 @@ stage_2:
 ;*************************
 ; Declaration Data
 ;*************************
-.s0 db "2nd stage...", 0x0A, 0x0D, 0
 
-.s1 db "Drive:0x"
-.p1 db " , C:0x"
-.p2 db "   , H:0x"
-.p3 db "  , S:0x"
-.p4 db " ", 0x0A, 0x0D, 0
+.s0		db	"2nd stage...", 0x0A, 0x0D, 0
 
-.e0 db "Can't get drive parameter.", 0
+.s1		db	" Drive:0x"
+.p1		db	"  , C:0x"
+.p2		db	"    , H:0x"
+.p3		db	"  , S:0x"
+.p4		db	"  ", 0x0A, 0x0D, 0
+
+.e0		db	"Can't get drive parameter.", 0
 
 stage_3:
     cdecl putc, .s0
@@ -168,7 +169,7 @@ stage_3:
     je .10E
 
     cdecl itoa, ax, .p4, 4, 16, 0b0100
-    shr eax, 16
+    shr   eax, 16
     cdecl itoa, ax, .p3, 4, 16, 0b0100
     cdecl putc, .s2
 .10E:
@@ -176,7 +177,8 @@ stage_3:
     jmp stage_4
 
 .s0: db "3rd stage...", 0x0A, 0x0D, 0
-.s1: db "Font Address="
+
+.s1: db " Font Address="
 .p1: db "ZZZZ:"
 .p2: db "ZZZZ", 0x0A, 0x0D, 0
      db 0x0A, 0x0D, 0
@@ -199,7 +201,7 @@ stage_4:
     cdecl write_kbc_command, 0xD1 ; output port read command
     cdecl write_kbc_data,    bx   ; output port data
 
-    cdecl write_kbc_data,    0xAE ; allow interrupt
+    cdecl write_kbc_command, 0xAE ; allow interrupt
 
     sti
 
@@ -207,8 +209,8 @@ stage_4:
 
     jmp	$
 
-.s0: db "4th stage...", 0x0A, 0x0D, 0
-.s1: db "A20 Gate Enabled", 0x0A, 0x0D, 0
+.s0:  db "4th stage...", 0x0A, 0x0D, 0
+.s1:  db " A20 Gate Enabled", 0x0A, 0x0D, 0
 
 .key: dw 0
 
