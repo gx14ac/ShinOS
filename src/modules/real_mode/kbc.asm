@@ -5,7 +5,7 @@
 ;
 ; ** Arguments
 ;     data            : write data.
-;コマンド
+;
 ; ** return values    : success(Expect 0), failure(0)
 ;*********************************************************************
 
