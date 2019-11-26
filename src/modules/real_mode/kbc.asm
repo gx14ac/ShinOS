@@ -7,6 +7,7 @@
 ;     data            : write data.
 ;
 ; ** return values    : success(Expect 0), failure(0)
+; aaaaaa
 ;*********************************************************************
 
 write_kbc_data:
