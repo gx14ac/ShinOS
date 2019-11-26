@@ -21,7 +21,7 @@ write_kbc_data:
 .10L:
     in      al,   0x64          ; checking KBC Status
     test    al,   0x02          ; zf = AL & 0x02. can i write a keyboard?
-    loopnz  .10L                ; --CX(not 0) && !ZF
+      loopnz  .10L                ; --CX(not 0) && !ZF
 
     cmp cx, 0
     jz .20E                     ; if (cx == 0) {

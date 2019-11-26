@@ -216,15 +216,15 @@ stage_4:
     mov bx, 0
 
 .10L:
+    mov ah, 0x00                ; waiting for input keyboard value
+    int 0x16                    ; AL(0x16, 0x00) calling keyboard service for bios
 
-    mov ah, 0x00
-    int 0x16
+    ; al register = ascii code(value converted from ASCII input from keyboard)
+    cmp al, '1'                 ; if(al < '1')
+    jb .10E                     ; break
 
-    cmp al, '1'
-    jb .10E
-
-    cmp al, '3'
-    ja .10E
+    cmp al, '3'                 ; if ('3'< al)
+    ja .10E                     ; break
 
     mov cl, al                  ; cl = input Keyboard Value
     dec cl                      ; cl -=1
@@ -247,7 +247,7 @@ stage_4:
     cmp   [.key],            byte 0xFA ; if (0xFA == key)
     jne   .11F
 
-    cdecl write_kbc_data,    bx
+    cdecl write_kbc_data,    bx        ;
 
     jmp .11E                           ; else
 
