@@ -19,9 +19,9 @@ write_kbc_data:
 
     mov cx, 0
 .10L:
-    in      al,   0x64                 ; checking KBC Status
-    test    al,   0x02                 ; zf = AL & 0x02. can i write a keyboard?
-    loopnz  .10L                       ; --CX(not 0) && !ZF
+    in      al,   0x64          ; checking KBC Status
+    test    al,   0x02          ; zf = AL & 0x02. can i write a keyboard?
+    loopnz  .10L                ; --CX(not 0) && !ZF
 
     cmp cx, 0
     jz .20E                     ; if (cx == 0) {
@@ -63,10 +63,10 @@ read_kbc_data:
     test    al, 0x01            ; ZF = al & 0x01
     loopz   .10L                ; while (--cx && !ZF)
 
-    cmp cx, 0                    ; if (CX)
-    jz  .20E                     ; {
+    cmp cx, 0                   ; if (CX)
+    jz  .20E                    ; {
     mov ah, 0x00
-    in  al, 0x60                 ; al = inp(0x60). 0x60 is DataRegister
+    in  al, 0x60                ; al = inp(0x60). 0x60 is DataRegister
 
     mov di, [bp + 4]            ; di = addr
     mov [di + 0], ax            ; DI[0] = ax
