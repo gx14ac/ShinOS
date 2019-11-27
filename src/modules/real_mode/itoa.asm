@@ -19,7 +19,7 @@ itoa:
     ; - Saving Register.
     ;---------------------
     push ax               ; ax(ax, al)
-    push bx               ; bx is 
+    push bx               ; bx is
     push cx               ; cx is counter register.
     push dx               ; dx
     push si               ; si is source index.
@@ -31,13 +31,13 @@ itoa:
     mov ax, [bp+4]             ; numeric.
     mov si, [bp+6]             ; buffer address.
     mov cx, [bp+8]             ; buffer size.
-         
+
     mov di, si                 ; di = &si. (si is source pointer.)
     add di, cx                 ; di = &di[cx -1]
     dec di                     ; decrement di.
-         
+
     mov bx, [bp+12]       ; flags = options arg.
-    
+
     ;---------------------
     ; - Signed handling.
     ;---------------------
@@ -75,20 +75,20 @@ itoa:
     mov dx, 0                  ; dx = 0
 
     div bx                     ; DX = DX:AX % 基数 // 余
-                               ; 算術レジスタに格納される.                             
+                               ; 算術レジスタに格納される.
                                ; AX = DX:AX / 基数 // 商
     mov si, dx                 ; si = dx
     mov dl, byte [.ascii + si] ; DL = ASCII[DX] Dx is 余. 余をindexとしてつかう.
-  
+
     mov [di], dl               ; *dst = DL. 文字列の代入
     dec di                     ; dst--;
-         
+
     cmp ax, 0                  ; (ax == 0) or (ax == 0)
     loopnz .30L                ; } while (AX);
 .30E:
 
-    ;---------------------  
-    ; - Remove space.  
+    ;---------------------
+    ; - Remove space.
     ;---------------------
     cmp cx, 0                  ; if(cx==0) cxのバッファサイズが０でなければ、空白を埋める.
 .40Q: je .40E                  ; {
@@ -102,9 +102,9 @@ itoa:
                                ; カウンタレジスタ分文字列の空白を削除する
     rep stosb                  ; while(--CX) *DI-- = '';
 .40E:                          ; }
-      
-    ;---------------------  
-    ; - Return Register.  
+
+    ;---------------------
+    ; - Return Register.
     ;---------------------
     pop di
     pop si
