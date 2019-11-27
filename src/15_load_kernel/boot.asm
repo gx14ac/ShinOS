@@ -281,13 +281,15 @@ stage_4:
 
 stage_5:
     cdecl putc, .s0
-    cdecl read_lba, BOOT, BOOT_SECT, KERNEL_SECT, BOOT_END
 
-    cmp   ax, KERNEL_SECT
-.10Q:    jz    .10E
-.10T:    cdecl putc, .e0
-         call  reboot
-.10E:
+    ; Loading Kernel
+    cdecl read_lba, BOOT, BOOT_SECT, KERNEL_SECT, BOOT_END ; ax = read_lba(...)
+
+    cmp   ax, KERNEL_SECT       ; if (ax != cx)
+.10Q:    jz    .10E             ; {
+.10T:    cdecl putc, .e0        ;
+    call  reboot                ; reboot
+.10E:                           ; }
     jmp  $
 
 .s0 db "5th stage...", 0x0A, 0x0D, 0
