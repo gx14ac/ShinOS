@@ -3,6 +3,7 @@
 
     ORG KERNEL_LOAD              ; kernel load address
 
+;Instruct the assembler to 32bit
 [BITS 32]
 ;****************************
 ; Entry Point
