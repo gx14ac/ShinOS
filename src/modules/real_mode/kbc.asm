@@ -28,8 +28,7 @@ write_kbc_data:
     mov al, [bp + 4]            ;     al = date
     out 0x60, al                ;     outp(0x60, al). 0x60 is input keyboard key.
                                 ; }
-.20E:
-
+.20E:1
     mov ax, cx
 
     pop cx
@@ -84,7 +83,7 @@ read_kbc_data:
 
 
 ;*********************************************************************
-;    Output KBC Commands.
+;    Output KBC Command
 ;=====================================================================
 ; ** Format           : word write_kbc_command(data);
 ;
