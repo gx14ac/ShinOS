@@ -10,7 +10,7 @@
 ; ** return:
 ;        read sector number
 ;**************************
-lba_chs:
+read_lba:
     push bp
     mov  bp, sp
 
@@ -19,7 +19,7 @@ lba_chs:
     mov si, [bp + 4]            ; si = drive info
 
     ; LBA -> CHS
-    mov   ax, [bp + 6]
+    mov   ax, [bp + 6]          ; ax = lba
     cdecl lba_chs, si, ,chs, ax
 
     mov al, [si + drive.no]
