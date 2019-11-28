@@ -329,7 +329,7 @@ stage_6:
 ;           |  +--------------------: f:PDDSTTTA
 ;           |                          P:Exist
 ;           |                          D:DPL(Privilege)
-;           |                          S:(DT)0=SystemorGate, 1=DataSegment
+;           |                          S:(DT)0=System or Gate, 1=DataSegment
 ;           |                          T:Type
 ;           |                            000(0)=R/- DATA
 ;           |                            001(1)=R/W DATA
@@ -346,7 +346,10 @@ stage_6:
 ;                                      D:Data/BandDown(0=16, 1=32Bit Segment)
 ;                                      A:any
 ;                                      L:Limit[19:16]
+
 ALIGN 4, db 0
+
+; Configuration Global Descriptor Table(GDT)
 ;         B_ F L f T b_____ l___
 GDT: dq 0x00_0_0_0_0_000000_0000 ; NULL
 .cs: dq 0x00_C_F_9_A_000000_FFFF ; CODE 4G
@@ -371,23 +374,26 @@ GDTR: dw GDT.gdt_end - GDT - 1  ; limit of descriptor table
 IDTR: dw 0                      ; idt_limit
       dd 0                      ; idt location
 
+
 stage_7:
     cli                         ; don't allow interrupt
 
-    ;***************
-    ; LOAD GDT
-    ;***************
+    ;*********************
+    ; Loading GDT & IDTR(Interrupt Descriptor Table)
+    ;*********************
     ldgt [GDTR]                 ; loading Global Descriptor Table
     lidt [IDTR]                 ; loading interrupt Descriptor Table
+                                ; lidt is we can register Descriptor Table
 
-    ;************************
+    ;**************************************
     ; Migrate Protect Mode
-    ;************************
+    ; To enter protected mode, simply set the PE bit in the cr0 register to 1
+    ;**************************************
     mov eax, cr0                ; set pe bit.
     or  ax, 1                   ; CR0 |= 1
     mov cr0, eax
 
-    jmp $ + 2                   ; Prohibit read ahead
+    jmp $ + 2                   ; Prohibit read ahead, Removing Real Mode Code
 
     ;**************************
     ; jump segment to segment
@@ -400,9 +406,10 @@ stage_7:
 ; Starting 32bit code
 ;*******************************
 CODE_32:
-    ;***********************
+    ;*************************************************************************************
     ; Initialize Selector
-    ;***********************
+    ; Set the same offset value as the data segment descriptor in each segment register
+    ;*************************************************************************************
     mov ax, SEL_DATA
     mov ds, ax
     mov es, ax
@@ -410,9 +417,9 @@ CODE_32:
     mov gs, ax
     mov ss, ax
 
-    ;***********************
-    ; Copy to Kernel
-    ;***********************
+    ;***************************
+    ; Copy the Kernel Program
+    ;***************************
     mov ecx, (KERNEL_SIZE) / 4
     mov esi, BOOT_END
     mov edi, KERNEL_LOAD
@@ -423,6 +430,7 @@ CODE_32:
     ;************************
     jmp KERNEL_LOAD             ; jump to first kernel address
 
+;*******************************
 ; Padding
 ;*******************************
 times BOOT_SIZE - ($ - $$) db 0
