@@ -308,12 +308,121 @@ stage_6:
     mov ax, 0x0012              ; VGA 640x480
     int 0x10                    ; BIOS(0x10, ax(0x12)) Configuration Video Mode
 
-    jmp $
+    jmp stage_7
 
 .s0: db "6th stage...", 0x0A, 0x0D, 0x0A, 0x0D
     db "[Push SPACE key to protect mode...]", 0x0A, 0x0D, 0
 
+;************************************
+; GLOBAL DESCRIPTOR TABLE
+; (Array of Segment Discriptor Table)
+;************************************
+;
+;    Segment Descriptor
+;        +--------+-----------------: Base (0xBBbbbbbb)
+;        |   +----|--------+--------: Limit(0x000Lllll)
+;        |   |    |        |
+;       +--+--+--+--+--+--+--+--+
+;       |B |FL|f |b       |l    |
+;       +--+--+--+--+--+--+--+--+
+;           |  |                         76543210
+;           |  +--------------------: f:PDDSTTTA
+;           |                          P:Exist
+;           |                          D:DPL(Privilege)
+;           |                          S:(DT)0=SystemorGate, 1=DataSegment
+;           |                          T:Type
+;           |                            000(0)=R/- DATA
+;           |                            001(1)=R/W DATA
+;           |                            010(2)=R/- STACK
+;           |                            011(3)=R/W STACK
+;           |                            100(4)=R/- CODE
+;           |                            101(5)=R/W CODE
+;           |                            110(6)=R/- CONFORM
+;           |                            111(7)=R/W CONFORM
+;           |                          A:Accessed
+;           |
+;           +-----------------------: F:GD0ALLLL
+;                                      G:Limit Scale(0=1, 1=4K)
+;                                      D:Data/BandDown(0=16, 1=32Bit Segment)
+;                                      A:any
+;                                      L:Limit[19:16]
+ALIGN 4, db 0
+;         B_ F L f T b_____ l___
+GDT: dq 0x00_0_0_0_0_000000_0000 ; NULL
+.cs: dq 0x00_C_F_9_A_000000_FFFF ; CODE 4G
+.ds: dq 0x00_C_F_9_2_000000_FFFF ; DATA 4G
+.gdt_end:
+
+;**********************
+; Selector
+;**********************
+SEL_CODE equ .cs - GDT          ; designated code selector
+SEL_DATA equ .ds - GDT          ; designated data selector
+
+;**********************
+; GDT
+;**********************
+GDTR: dw GDT.gdt_end - GDT - 1  ; limit of descriptor table
+      dd GDT                    ; descriptor address
+
+;**************************************
+; IDT(because don't allow interrupt)
+;*************************************
+IDTR: dw 0                      ; idt_limit
+      dd 0                      ; idt location
+
+stage_7:
+    cli                         ; don't allow interrupt
+
+    ;***************
+    ; LOAD GDT
+    ;***************
+    ldgt [GDTR]                 ; loading Global Descriptor Table
+    lidt [IDTR]                 ; loading interrupt Descriptor Table
+
+    ;************************
+    ; Migrate Protect Mode
+    ;************************
+    mov eax, cr0                ; set pe bit.
+    or  ax, 1                   ; CR0 |= 1
+    mov cr0, eax
+
+    jmp $ + 2                   ; Prohibit read ahead
+
+    ;**************************
+    ; jump segment to segment
+    ;**************************
+[BITS_32]
+    DB  0x66                    ; Operand Size Override Prefix
+    jmp SEL_CODE:CODE_32
+
 ;*******************************
+; Starting 32bit code
+;*******************************
+CODE_32:
+    ;***********************
+    ; Initialize Selector
+    ;***********************
+    mov ax, SEL_DATA
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
+    ;***********************
+    ; Copy to Kernel
+    ;***********************
+    mov ecx, (KERNEL_SIZE) / 4
+    mov esi, BOOT_END
+    mov edi, KERNEL_LOAD
+    rep movsd
+
+    ;************************
+    ; Migrate Kenel Process
+    ;************************
+    jmp KERNEL_LOAD             ; jump to first kernel address
+
 ; Padding
 ;*******************************
 times BOOT_SIZE - ($ - $$) db 0
