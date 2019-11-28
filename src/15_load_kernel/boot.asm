@@ -268,7 +268,7 @@ stage_4:
     cdecl putc, .s3
 
     ; terminating process
-    jmp stage_5
+    jmp   stage_5
 
 .s0:  db "4th stage...", 0x0A, 0x0D, 0
 .s1:  db " A20 Gate Enabled", 0x0A, 0x0D, 0
