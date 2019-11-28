@@ -28,7 +28,7 @@ write_kbc_data:
     mov al, [bp + 4]            ;     al = date
     out 0x60, al                ;     outp(0x60, al). 0x60 is input keyboard key.
                                 ; }
-.20E:1
+.20E:
     mov ax, cx
 
     pop cx

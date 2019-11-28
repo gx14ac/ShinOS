@@ -1,7 +1,7 @@
 memcmp:
     push bp
     mov bp, sp
-    
+
     push bx
     push cx
     push dx
@@ -12,7 +12,7 @@ memcmp:
     mov si, [bp+4]
     mov di, [bp+6]
     mov cx, [bp+8]
-    
+
     repe cmpsb ; si == di
     jnz .10F   ; false jmp to .10F
     mov ax, 0  ; return true
