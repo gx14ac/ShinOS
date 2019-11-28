@@ -20,7 +20,7 @@ read_lba:
 
     ; LBA -> CHS
     mov   ax, [bp + 6]          ; ax = lba
-    cdecl lba_chs, si, ,chs, ax
+    cdecl lba_chs, si, .chs, ax
 
     mov al, [si + drive.no]
     mov [.chs + drive.no], al
@@ -35,4 +35,4 @@ read_lba:
     ret
 
 ALIGN 2
-.chs: times drive size db 0
+.chs: times drive_size db 0

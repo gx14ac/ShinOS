@@ -22,7 +22,7 @@ lba_chs:
     mov di, [bp + 6]
 
     mov al, [si + drive.head]
-    mov byte [si + drive.sect]
+    mul byte [si + drive.sect]
     mov bx, ax
 
     mov dx, 0
