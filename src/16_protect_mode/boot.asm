@@ -370,7 +370,7 @@ GDTR: dw GDT.gdt_end - GDT - 1  ; limit of descriptor table
 
 ;**************************************
 ; IDT(because don't allow interrupt)
-;*************************************
+;**************************************
 IDTR: dw 0                      ; idt_limit
       dd 0                      ; idt location
 
@@ -378,17 +378,17 @@ IDTR: dw 0                      ; idt_limit
 stage_7:
     cli                         ; don't allow interrupt
 
-    ;*********************
+    ;***************************************************
     ; Loading GDT & IDTR(Interrupt Descriptor Table)
-    ;*********************
+    ;***************************************************
     ldgt [GDTR]                 ; loading Global Descriptor Table
     lidt [IDTR]                 ; loading interrupt Descriptor Table
                                 ; lidt is we can register Descriptor Table
 
-    ;**************************************
+    ;*****************************************************************************
     ; Migrate Protect Mode
     ; To enter protected mode, simply set the PE bit in the cr0 register to 1
-    ;**************************************
+    ;*****************************************************************************
     mov eax, cr0                ; set pe bit.
     or  ax, 1                   ; CR0 |= 1
     mov cr0, eax
