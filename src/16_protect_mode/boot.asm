@@ -381,7 +381,7 @@ stage_7:
     ;***************************************************
     ; Loading GDT & IDTR(Interrupt Descriptor Table)
     ;***************************************************
-    ldgt [GDTR]                 ; loading Global Descriptor Table
+    lgdt [GDTR]                 ; loading Global Descriptor Table
     lidt [IDTR]                 ; loading interrupt Descriptor Table
                                 ; lidt is we can register Descriptor Table
 
@@ -398,7 +398,7 @@ stage_7:
     ;**************************
     ; jump segment to segment
     ;**************************
-[BITS_32]
+[BITS 32]
     DB  0x66                    ; Operand Size Override Prefix
     jmp SEL_CODE:CODE_32
 
