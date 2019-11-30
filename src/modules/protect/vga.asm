@@ -79,7 +79,7 @@ vga_set_write_plane:
 ;     color : color
 ; return : nothing
 ;********************************************************
-vga_font_copy:
+vram_font_copy:
 
     ; ebp + 20 | color
     ; ebp + 16 | plane
