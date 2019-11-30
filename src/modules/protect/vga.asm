@@ -7,9 +7,9 @@
 ;*************************************
 vga_set_read_plane:
 
-    ; ebp + 8 plane(index)
-    ; ebp + 4 return address
-    ; ebp + 0 base address
+    ; ebp + 8 | plane(index)
+    ; ebp + 4 | return address
+    ; ebp + 0 | base address
     push ebp
     mov  ebp, esp
 
@@ -42,9 +42,9 @@ vga_set_read_plane:
 ;*************************************
 vga_set_write_plane:
 
-    ; ebp + 8 plane(plane bit)
-    ; ebp + 4 return address
-    ; ebp + 0 base address
+    ; ebp + 8 | plane(plane bit)
+    ; ebp + 4 | return address
+    ; ebp + 0 | base address
     push ebp
     mov  ebp, esp
 
@@ -64,6 +64,104 @@ vga_set_write_plane:
     pop eax
 
     mov esp, ebp
+    pop ebp
+
+    ret
+
+;********************************************************
+; write font
+;********************************************************
+; format : void vram_font_copy(font, vram, plane, color)
+; arg
+;     font  : font address
+;     vram  : VRAM address
+;     plane : output plane
+;     color : color
+; return : nothing
+;********************************************************
+vga_font_copy:
+
+    ; ebp + 20 | color
+    ; ebp + 16 | plane
+    ; ebp + 12 | VRAM address
+    ; ebp + 8  | Font address
+    ; ebp + 4  | return value
+    ; ebp + 0  | base address
+
+    push ebp
+    mov  ebp, esp
+
+    push eax
+    push ebx
+    push ecx
+    push edx
+    push esi
+    push edi
+
+    mov   esi, [ebp + 8]          ; esi = font addr
+    mov   edi, [ebp +12]          ; edi = vram addr
+    movzx eax, byte[ebp + 16]     ; eax = plane(select bit)
+    movzx ebx, word[ebp + 20]     ; ebx = color
+
+    test bh, al                 ; zf = (background color & plane)
+    setz dh                     ; ah = zf ? 0x01 : 0x00
+    dec  dh                     ; ah-- // 0x00 or 0xFF
+
+    test bl, al                 ; zf = (foreground color & plane)
+    setz dl                     ; al = zf ? 0x01 : 0x00
+    dec  dl                     ; al-- // 0x00 or 0xFF
+
+    ;****************************
+    ; copy the 16 bit font
+    ;****************************
+
+    cld                         ; df = 0 // add address
+
+    mov ecx, 16                 ; ecx = 16
+
+.10L:
+
+    lodsb                       ; al = *esi++ // font
+    mov   ah, al                ; ah ~= al
+    not   ah
+
+    ;****************************
+    ; foreground color
+    ;****************************
+    and al, dl                  ; al = foreground color & font
+
+    ;****************************
+    ; background color
+    ;****************************
+    test ebx, 0x0010            ; if(through mode)
+    jz   .11F                   ; {
+    and  ah, [edi]              ;      ah = !font & [edi] // current value
+    jmp  .11E                   ; }
+.11F:                           ; else
+    and ah, dh                  ; ah = !font & background color
+.11E:
+
+    ;*****************************************
+    ; composite background & foreground color
+    ;*****************************************
+    or al, ah
+
+    ;****************************
+    ; output new value
+    ;****************************
+    mov  [edi], al              ; [edi] = al // write plane
+    add  edi, 80                ; edi += 80
+    loop .10L                   ; while (--ecx)
+.10E:
+    pop edi
+    pop esi
+    pop edx
+    pop ecx
+    pop ebx
+    pop eax
+
+    mov esp, ebp
+
     pop ebp
 
     ret
