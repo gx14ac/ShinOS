@@ -8,7 +8,7 @@ reboot:
     mov ah, 0x10                ; // Wating for input keyboard.
     int 0x16                    ; // AL = BIOS(0x16, 0x10)
                                 ;
-    cmp al, ''                  ; ZF == AL == '';
+    cmp al, ' '                 ; ZF == AL == '';
     jne .10L                    ; } while(ZF)
 
     ;; Return Space.
