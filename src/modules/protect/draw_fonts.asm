@@ -9,8 +9,8 @@
 ;
 ;**********************************************************
 draw_font:
-    push ebx
-    mov  ebx, esp
+    push ebp
+    mov  ebp, esp
 
     push eax
     push ebx
@@ -38,7 +38,7 @@ draw_font:
     add eax, esi                ; eax += x
 
     mov ebx, ecx                ; ebx = ecx
-    shr ebx, 4                  ; ebx /= 16
+    shr ebx, 4                  ; ebx /= 16. There is a line break every 16 characters
     add ebx, edi                ; ebx += y
 
     cdecl draw_char, eax, ebx, 0x07, ecx ; draw_char()
