@@ -29,11 +29,12 @@ draw_font:
     ; show the font list
     ;***********************
     mov ecx, 0                  ; for (ecx = 0
-.10L: cmp ecx, 256              ;      ecx < 256
+.10L:
+    cmp ecx, 256                ;      ecx < 256
     jae .10E                    ; ecx++)
 
     mov eax, ecx                ; eax = ecx
-    and eax, 0x0F               ; eax &= 0x0F
+    and eax, 0x0F               ; eax &= 0x0F. fill upper 4 bits
     add eax, esi                ; eax += x
 
     mov ebx, ecx                ; ebx = ecx
