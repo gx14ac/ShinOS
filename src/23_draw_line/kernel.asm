@@ -67,6 +67,7 @@ FONT_ADDR: dd 0
 %include "../modules/protect/draw_color_bar.asm"
 %include "../modules/protect/draw_pixel.asm"
 %include "../modules/protect/draw_line.asm"
+
 ;****************************
 ; Padding
 ;****************************
