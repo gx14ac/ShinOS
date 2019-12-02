@@ -99,7 +99,7 @@ vram_font_copy:
     push edi
 
     mov   esi, [ebp + 8]          ; esi = font addr
-    mov   edi, [ebp +12]          ; edi = vram addr
+    mov   edi, [ebp + 12]          ; edi = vram addr
     movzx eax, byte[ebp + 16]     ; eax = plane(select bit)
     movzx ebx, word[ebp + 20]     ; ebx = color
 
