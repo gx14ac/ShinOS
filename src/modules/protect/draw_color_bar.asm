@@ -47,10 +47,9 @@ draw_color_bar:
     shl edx, 1
     mov edx, [.t0 + edx]
 
-    cdecl draw_str, eax, ebx, edx, .so
+    cdecl draw_str, eax, ebx, edx, .s0
 
     inc ecx
-
     jmp .10L
 .10E:
     pop edi
