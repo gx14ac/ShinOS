@@ -19,21 +19,36 @@ draw_pixel:
     push ecx
     push edi
 
+    ;************************************
+    ; Multiply Y coordinate by 80
+    ;************************************
     mov edi, [ebp + 12]
     shl edi, 4
     lea edi, [edi * 4 + edi + 0xA_0000]
 
+    ;************************************
+    ; Add X coordinate 1/8
+    ;************************************
     mov ebx, [ebp + 8]
     mov ecx, ebx
     shr ebx, 3
     add edi, ebx
 
+    ;**************************************************************************
+    ; Calculate bit position from remainder of X coordinate divided by 8
+    ;**************************************************************************
     and ecx, 0x07
     mov ebx, 0x08
     shr ebx, cl
 
+    ;******************************
+    ; Select color
+    ;******************************
     mov ecx, [ebp + 16]
 
+    ;******************************
+    ; Output per plane
+    ;******************************
     cdecl vga_set_read_plane, 0x03
     cdecl vga_set_write_plane, 0x08
     cdecl vram_bit_copy, ebx, edi, 0x08, ecx
