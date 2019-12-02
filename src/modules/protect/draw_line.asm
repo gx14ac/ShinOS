@@ -54,7 +54,7 @@ draw_line:
     ;****************************************
     mov ecx, [ebp + 12]
     mov edx, [ebp + 20]
-    mov edx, ecx
+    sub edx, ecx
     jge .20F
 
     neg edx
@@ -96,6 +96,7 @@ draw_line:
     jnz .30E
     mov ecx, 1
 .30E:
+
 .50L:
 %ifdef USE_SYSTEM_CALL
     mov eax, ecx
@@ -107,9 +108,7 @@ draw_line:
 
     mov ecx, eax
 %else
-    cdecl draw_pixel, dword[ebp - 8], \
-        dword[ebp - 20], \
-        dword[ebp + 24]         ; // drawing point
+    cdecl draw_pixel, dword[ebp - 8], dword[ebp - 20], dword[ebp + 24]
 %endif
     mov eax, [esi - 8]
     add [esi - 0], eax
