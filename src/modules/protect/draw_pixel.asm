@@ -38,7 +38,7 @@ draw_pixel:
     ; Calculate bit position from remainder of X coordinate divided by 8
     ;**************************************************************************
     and ecx, 0x07
-    mov ebx, 0x08
+    mov ebx, 0x80
     shr ebx, cl
 
     ;******************************
