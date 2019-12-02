@@ -46,21 +46,21 @@ draw_char:
     ;*******************************************
     movzx ebx, word[ebp + 16]
 
-    cdecl vga_set_read_plane, 0x03  ; write plane = light
-    cdecl vga_set_write_plane, 0x08 ; read plane = light
-    cdecl vram_font_copy, esi, edi, 0x08, ebx
+    cdecl vga_set_read_plane,  0x03                  ; write plane = light
+    cdecl vga_set_write_plane, 0x08                  ; read plane = light
+    cdecl vram_font_copy,      esi, edi, 0x08, ebx
 
-    cdecl vga_set_read_plane, 0x02  ; read plane (Red)
-    cdecl vga_set_write_plane, 0x04 ; write plane (Red)
-    cdecl vram_font_copy, esi, edi, 0x04, ebx
+    cdecl vga_set_read_plane,  0x02                   ; read plane (Red)
+    cdecl vga_set_write_plane, 0x04                   ; write plane (Red)
+    cdecl vram_font_copy,      esi, edi, 0x04, ebx
 
-    cdecl vga_set_read_plane, 0x02  ; read plane (Green)
-    cdecl vga_set_write_plane, 0x04 ; write plane (Green)
-    cdecl vram_font_copy, esi, edi, 0x02, ebx
+    cdecl vga_set_read_plane,  0x01                   ; read plane (Green)
+    cdecl vga_set_write_plane, 0x02                   ; write plane (Green)
+    cdecl vram_font_copy,      esi, edi, 0x02, ebx
 
-    cdecl vga_set_read_plane, 0x00  ; read plane (Blue)
-    cdecl vga_set_write_plane, 0x01 ; write plane (Blue)
-    cdecl vram_font_copy, esi, edi, 0x01, ebx
+    cdecl vga_set_read_plane,  0x00                   ; read plane (Blue)
+    cdecl vga_set_write_plane, 0x01                  ; write plane (Blue)
+    cdecl vram_font_copy,      esi, edi, 0x01, ebx
 
     pop edi
     pop esi
