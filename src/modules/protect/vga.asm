@@ -165,3 +165,62 @@ vram_font_copy:
     pop ebp
 
     ret
+
+;***********************************************
+; wirte bit patern
+; **********************
+; ** format : vram_bit_copy(bit, vram, flag)
+; ** arg
+;        bit  : output bit patern
+;        vram : vram addr
+;        flag : 1:set, 0:clear
+; ** return value : nothing
+;***********************************************
+vram_bit_copy:
+
+    ; ebp + 20 | color(background/foreground)
+    ; ebp + 16 | plane(select bit)
+    ; ebp + 12 | vram addr
+    ; ebp + 8  | output bit patern
+    push ebp
+    mov  ebp, esp
+
+    push eax
+    push ebx
+    push edi
+
+    mov   edi, [ebp + 12]       ; edi = vram addr
+    movzx eax, byte[ebp + 16]   ; eax = plane(select bit)
+    movzx ebx, word[ebp + 20]   ; ebx = display color
+
+    test bl, al
+    setz bl
+    dec  bl
+
+    ;******************************
+    ; create mask data
+    ;******************************
+    mov al, [ebp + 8]
+    mov ah, al
+    not ah
+
+    ;******************************
+    ; get current output
+    ;******************************
+    and ah, [edi]
+    and al, bl
+    or  al, ah
+
+    ;******************************
+    ; output new value
+    ;******************************
+    mov [edi], al
+
+    pop edi
+    pop ebx
+    pop eax
+
+    mov esp, ebp
+    pop ebp
+
+    ret
