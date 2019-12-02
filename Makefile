@@ -1,5 +1,5 @@
-OSNAME:=dekoos
-IMGNAME:=img.img
+OSNAME:=ChooseYourLife
+IMGNAME:=ChooseYourSelf
 
 run:
 	VBoxManage createvm --name $(OSNAME) --ostype Other --register
