@@ -15,13 +15,15 @@ rtc_get_time:
     push ebx
 
     ;**************************
-    ; get clock data from rtc
+    ; ** get clock data from rtc
+    ; ** output parameter
     ; 0x00 | second
     ; 0x02 | minutes
     ; 0x04 | hour
     ; 0x07 | day
     ; 0x08 | month
     ; 0x09 | year
+    ; **
     ;**************************
     mov  al, 0x0A               ; al = 0x0A
     out  0x70, al               ; output(0x70, AL)
