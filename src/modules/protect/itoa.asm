@@ -40,7 +40,7 @@ itoa:
     ;*********************
     mov eax, [ebp + 8]          ; eax = num
     mov esi, [ebp + 12]         ; esi = buffer addr
-    mov ecx. [ebp + 16]         ; ecx = buffer size
+    mov ecx, [ebp + 16]         ; ecx = buffer size
 
     mov edi, esi                ; edi = last buffer addr
     add edi, ecx                ; edi += ecx
