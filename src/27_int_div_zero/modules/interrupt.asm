@@ -64,19 +64,24 @@ init_int:
 
 ;******************************************
 ; show the stack value & infinite loop
+; default interrupt process
 ;******************************************
 int_stop:
     cdecl draw_str, 25, 15, 0x060F, eax ; draw_str(EAX)
 
+    ; address the process where the interrupt occurred
     mov eax, [esp + 0]                  ; eax = esp[0]
     cdecl itoa, eax, .p1, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
 
+    ; code segment. code pointer
     mov eax, [esp + 4]
     cdecl itoa, eax, .p2, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
 
+    ; eflags register. processer status etc..
     mov eax, [esp + 8]
     cdecl itoa, eax, .p3, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
 
+    ; dummy data or error code
     mov eax, [esp + 12]
     cdecl itoa, eax, .p4, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
 
