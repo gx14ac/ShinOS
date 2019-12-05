@@ -25,11 +25,32 @@ kernel:
     ; initialize
     ;*******************************
     cdecl    init_int              ; initialize interrupt vector
+    cdecl    init_pic              ; intialize interrupt controller
+
     set_vect 0x00, int_zero_div    ; register interrupt process : zero divide
     set_vect 0x28, int_rtc         ; register interrupt process : rtc
 
     ; interrupt enable device setting
     cdecl rtc_int_en, 0x10
+
+    ;***********************************************
+    ; master PIC
+    ; configuration IMR(interrupt mask register)
+    ; 0x21 is IRQ2
+    ;***********************************************
+    outp 0x21, 0b1111_1011
+
+    ;***********************************************
+    ; slave pic
+    ; configuration imr(interrupt mask register)
+    ; 0xa1 is irq0
+    ;***********************************************
+    outp 0xA1, 0b1111_1110      ; enalbe interrupt : rtc
+
+    ;***********************************************
+    ; interrupt enable cpu
+    ;***********************************************
+    sti
 
     ; show the font list
     cdecl draw_font, 63, 13     ; show the font list
@@ -38,16 +59,10 @@ kernel:
     ; show the char
     cdecl draw_str, 25, 14, 0x010F, .s0 ; draw_str()
 
-    ;***********************************
-    ; calling interrupt by zero divide
-    ;***********************************
-    mov al, 0
-    div al
-
     ; show the clock
 .10L:
-    cdecl rtc_get_time, RTC_TIME
-    cdecl draw_time, 72, 0, 0x0700, dword[RTC_TIME]
+    mov eax, [RTC_TIME]         ; get the oclock
+    cdecl draw_time, 72, 0, 0x0700, eax ; show the oclock
     jmp .10L
 
     jmp $
@@ -72,8 +87,9 @@ RTC_TIME:  dd 0
 %include "../modules/protect/itoa.asm"
 %include "../modules/protect/rtc.asm"
 %include "../modules/protect/draw_time.asm"
+%include "../modules/protect/interrupt.asm"
 %include "../modules/protect/int_rtc.asm"
-%include "modules/interrupt.asm"
+%include "../modules/protect/pic.asm"
 
 ;****************************
 ; Padding
