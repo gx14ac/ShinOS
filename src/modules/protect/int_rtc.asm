@@ -26,10 +26,12 @@ rtc_int_en:
     pop ebp
 
     ret
+
 ;*******************************************
 ; interrupt process : RTC
 ;*******************************************
 int_rtc:
+
     pusha
     push ds
     push es
