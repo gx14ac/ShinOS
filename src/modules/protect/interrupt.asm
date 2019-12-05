@@ -67,6 +67,10 @@ init_int:
 ; default interrupt process
 ;******************************************
 int_stop:
+
+    ; allow the other interrupt process
+    sti                         ; allow interrupt
+
     cdecl draw_str, 25, 15, 0x060F, eax ; draw_str(EAX)
 
     ; address the process where the interrupt occurred
