@@ -79,6 +79,9 @@ kernel:
     mov   eax, [RTC_TIME]               ; get the oclock
     cdecl draw_time, 72, 0, 0x0700, eax ; show the oclock
 
+    ; display the rotation bar
+    cdecl draw_rotation_bar
+
     ; get the keycode
     cdecl ring_rd, _KEY_BUFF, .int_key ; eax = ring_rd(buff, &int_key)
     cmp   eax, 0                       ; if (eax == 0)
@@ -118,6 +121,10 @@ RTC_TIME:	dd	0
 %include "../modules/protect/pic.asm"
 %include "../modules/protect/int_keyboard.asm"
 %include "../modules/protect/ring_buff.asm"
+
+%include "../modules/protect/draw_rotation_bar.asm"
+%include "../modules/protect/timer.asm"
+%include "modules/int_timer.asm"
 
 ;****************************
 ; Padding
