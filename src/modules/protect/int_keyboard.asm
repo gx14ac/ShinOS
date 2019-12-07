@@ -29,11 +29,14 @@ int_keyboard:
     ;**********************************
     ; send interrupt terminate command
     ;**********************************
-    outp 0x20, 0x20
+    outp 0x20, 0x20             ; outp() // master pic:eoi command
 
     pop es
     pop ds
+    popa
 
-    iret ; return interrupt process
+    ; return interrupt process
+    iret
+
 ALIGN 4, db 0
-_KEY_BUFF: times ring_buff_size db 0
+_KEY_BUFF: times ring_buff_size db 0 ; ring_buff_size  occupied by ring buff structure
