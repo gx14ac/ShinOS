@@ -24,7 +24,7 @@ kernel:
     ; initialize
     ;*******************************
     cdecl    init_int              ; initialize interrupt vector
-    cdecl    init_pic              ; intialize interrupt controller
+    cdecl    init_pic              ; initialize interrupt controller
 
     ;************************************************************
     ;                         PIC Map
@@ -59,7 +59,7 @@ kernel:
     ;***********************************************
     ; configuration IMR(interrupt mask register)
     ;***********************************************
-    outp 0x21, 0b_1111_1001      ; enable interrupt : kbc
+    outp 0x21, 0b_1111_1000      ; enable interrupt : pic/kbc/timer
     outp 0xA1, 0b_1111_1110      ; enalbe interrupt : rtc
 
     ;***********************************************
