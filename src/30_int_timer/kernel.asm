@@ -48,6 +48,10 @@ kernel:
     ;outp 0xA1, 0x01             ; SLAVE.ICW4 = 0x01
     ;outp 0xA1, 0xFF             ; interrupt slave mask
 
+    ;************************************************************
+    ;
+    ;************************************************************
+
     set_vect 0x00, int_zero_div    ; register interrupt process : zero divide
     set_vect 0x20, int_timer       ; register interrupt process : timer // master pic IRQ0
     set_vect 0x21, int_keyboard    ; register interrupt process : kbc   // default IRQ
