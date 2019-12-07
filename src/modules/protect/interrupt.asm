@@ -67,22 +67,26 @@ init_int:
 ; default interrupt process
 ;******************************************
 int_stop:
+
+    ; allow the other interrupt process
+    sti                         ; allow interrupt
+
     cdecl draw_str, 25, 15, 0x060F, eax ; draw_str(EAX)
 
     ; address the process where the interrupt occurred
-    mov eax, [esp + 0]                  ; eax = esp[0]
-    cdecl itoa, eax, .p1, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
+    mov   eax, [esp + 0]                  ; eax = esp[0]
+    cdecl itoa, eax, .p1, 8, 16, 0b0100   ; itoa(eax, 8, 16, 0b0100)
 
     ; code segment. code pointer
-    mov eax, [esp + 4]
+    mov   eax, [esp + 4]
     cdecl itoa, eax, .p2, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
 
     ; eflags register. processer status etc..
-    mov eax, [esp + 8]
+    mov   eax, [esp + 8]
     cdecl itoa, eax, .p3, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
 
     ; dummy data or error code
-    mov eax, [esp + 12]
+    mov   eax, [esp + 12]
     cdecl itoa, eax, .p4, 8, 16, 0b0100 ; itoa(eax, 8, 16, 0b0100)
 
     cdecl draw_str, 25, 16, 0x0F04, .s1 ; draw_str("esp + 0")

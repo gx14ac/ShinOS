@@ -53,3 +53,15 @@ struc drive
         .head resw  1               ; Head.
         .sect resw  1               ; Sector.
 endstruc
+
+;*********************************************
+; ring buffer
+;*********************************************
+%define RING_ITEM_SIZE (1 << 4)
+%define RING_INDEX_MASK (RING_ITEM_SIZE - 1)
+
+struc ring_buff
+    .rp    resd 1               ; read position
+    .wp    resd 1               ; write position
+    .item  resb RING_ITEM_SIZE  ; buffer
+endstruc
