@@ -62,9 +62,9 @@ TSS_1:
 .ldt:    dd SS_LDT              ;* 96:ldt segment selecter
 .io:     dd 0                   ; 100:I/O MapBaseAddress
 
-;********************************************
+;*****************************
 ; Global Descriptor Table
-;********************************************
+;*****************************
 GDT:			dq	0x0000000000000000			; NULL
 .cs_kernel:		dq	0x00CF9A000000FFFF		; CODE 4G
 .ds_kernel:		dq	0x00CF92000000FFFF		; DATA 4G
@@ -72,6 +72,18 @@ GDT:			dq	0x0000000000000000			; NULL
 .tss_0:             dq  0x0000890000000067      ; TSS descriptor
 .tss_1:             dq  0x0000890000000067      ; TSS descriptor
 .end:
+
+;*********************************
+; Global Descriptor Base Address
+;*********************************
+CS_KERNEL equ .cs_kernel - GDT
+DS_KERNEL equ .ds_kernel - GDT
+SS_LDT    equ .ldt       - GDT
+SS_TASK_0 equ .tss_0	 - GDT
+SS_TASK_1 equ .tss_1	 - GDT
+
+GDTR: dw GDT.end - GDT - 1
+      dd GDT
 
 ;********************************************
 ; Local Descriptor Table

@@ -20,6 +20,12 @@ kernel:
     add   eax, ebx                   ; eax += ebx
     mov   [FONT_ADDR], eax           ; FONT_ADDR[0] = eax
 
+    ;******************************
+    ; configure tss descriptor
+    ;******************************
+    set_desc GDT.tss_0, TSS_0   ; conf tss for task0
+    set_desc GDT.tss_1, TSS_1   ; conf tss for task1
+
     ;***********************************************
     ; configure LDT
     ;***********************************************
@@ -28,6 +34,22 @@ kernel:
     ; descriptor limit  : limit
     ;***********************************************
     set_desc GDT.ldt, LDT, word LDT_LIMIT
+
+    ;********************
+    ; load GDT(reconf)
+    ;********************
+    lgdt [GDTR]                 ; reload global descriptor table
+
+    ;********************
+    ; conf stack
+    ;********************
+    mov esp, SP_TASK_0          ; set up a stack for task 0
+
+    ;****************************
+    ; initialize task register
+    ;****************************
+    mov ax, SS_TASK_0
+    ltr ax
 
     ;*******************************
     ; initialize
