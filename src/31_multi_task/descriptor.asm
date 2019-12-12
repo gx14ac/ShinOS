@@ -93,6 +93,7 @@ LDT: dq 0x0000000000000000      ; NULL
 .ds_task_0: dq 0x00CF92000000FFFF  ; DATA 4G
 .cs_task_1: dq	0x00CF9A000000FFFF ; CODE 4G
 .ds_task_1: dq	0x00CF92000000FFFF ; DATA 4G
+.end:
 
 ; `| 4` means that the segment granularity is 4k
 CS_TASK_0 equ (.cs_task_0 - LDT) | 4 ; designated task0 cs selecter
