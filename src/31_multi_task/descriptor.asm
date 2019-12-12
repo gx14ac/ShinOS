@@ -27,57 +27,60 @@ LDT_LIMIT equ .end - LDT - 1
 ; TSS(Task State Segment) for TASK_0
 ;********************************************
 TSS_0:
-.link:   dd 0
-.esp0:   dd SP_TASK_0 - 512
-.ss0:    dd DS_KERNEL
-.esp1:   dd 0
-.ss1:    dd 0
-.esp2:   dd 0
-.ss2:    dd 0
-.cr3:    dd 0
-.eip:    dd 0
-.eflags: dd 0
-.eax:    dd 0
-.ecx:    dd 0
-.edx:    dd 0
-.ebx:    dd 0
-.esp:    dd 0
-.ebp:    dd 0
-.esi:    dd 0
-.edi:    dd 0
-.es:     dd 0
-.cs:     dd 0
-.ss:     dd 0
-.ds:     dd 0
-.fs:     dd 0
-.gs:     dd 0
-.ldt:    dd 0
-.io:     dd 0
+.link:   dd 0                   ;
+.esp0:   dd SP_TASK_0 - 512     ;*4:esp0
+.ss0:    dd DS_KERNEL           ;*8
+.esp1:   dd 0                   ;*12:esp1
+.ss1:    dd 0                   ;*16
+.esp2:   dd 0                   ;*20:esp2
+.ss2:    dd 0                   ;*24
+.cr3:    dd 0                   ; 28:CR3(PDBR)
+.eip:    dd 0                   ; 32:EIP
+.eflags: dd 0                   ; 36:EFlAGS
+.eax:    dd 0                   ; 40:eax
+.ecx:    dd 0                   ; 44:ecx
+.edx:    dd 0                   ; 48:edx
+.ebx:    dd 0                   ; 52:ebx
+.esp:    dd 0                   ; 56:esp
+.ebp:    dd 0                   ; 60:ebp
+.esi:    dd 0                   ; 64:esi
+.edi:    dd 0                   ; 68:edi
+.es:     dd 0                   ; 72:es
+.cs:     dd 0                   ; 76:cs
+.ss:     dd 0                   ; 80:ss
+.ds:     dd 0                   ; 84:ds
+.fs:     dd 0                   ; 88:fs
+.gs:     dd 0                   ; 92:gs
+.ldt:    dd 0                   ;*96:ldt
+.io:     dd 0                   ;100:I/O MapBaseAddress
 
+;********************************************
+; TSS(Task State Segment) for TASK_1
+;********************************************
 TSS_1:
 .link:   dd 0
-.esp0:   dd SP_TASK_1 - 512
-.ss0:    dd DS_KERNEL
-.esp1:   dd 0
-.ss1:    dd 0
-.esp2:   dd 0
-.ss2:    dd 0
-.cr3:    dd 0
-.eip:    dd task_1
-.eflags: dd 0x0202
-.eax:    dd 0
-.ecx:    dd 0
-.edx:    dd 0
-.ebx:    dd 0
-.esp:    dd SP_TASK_1
-.ebp:    dd 0
-.esi:    dd 0
-.edi:    dd 0
-.es:     dd DS_TASK_1
-.cs:     dd CS_TASK_1
-.ss:     dd DS_TASK_1
-.ds:     dd DS_TASK_1
-.fs:     dd DS_TASK_1
-.gs:     dd DS_TASK_1
-.ldt:    dd SS_LDT
-.io:     dd 0
+.esp0:   dd SP_TASK_1 - 512     ;*  4:esp0
+.ss0:    dd DS_KERNEL           ;*  8:
+.esp1:   dd 0                   ;* 12:esp1
+.ss1:    dd 0                   ;* 16:
+.esp2:   dd 0                   ;* 20:esp2
+.ss2:    dd 0                   ;* 24:
+.cr3:    dd 0                   ;* 28:CR3(PDBR)
+.eip:    dd task_1              ;  32:eip
+.eflags: dd 0x0202              ;  36:EFLAGS
+.eax:    dd 0                   ;  40:eax
+.ecx:    dd 0                   ;  44:ecx
+.edx:    dd 0                   ;  48:edx
+.ebx:    dd 0                   ;  52:ebx
+.esp:    dd SP_TASK_1           ;  56:esp
+.ebp:    dd 0                   ;  60:ebp
+.esi:    dd 0                   ;  64:esi
+.edi:    dd 0                   ;  68:edi
+.es:     dd DS_TASK_1           ;  72:es
+.cs:     dd CS_TASK_1           ;  76:cs
+.ss:     dd DS_TASK_1           ;  80:ss
+.ds:     dd DS_TASK_1           ;  84:ds
+.fs:     dd DS_TASK_1           ;  88:fs
+.gs:     dd DS_TASK_1           ;  92:gs
+.ldt:    dd SS_LDT              ;* 96:ldt segment selecter
+.io:     dd 0                   ; 100:I/O MapBaseAddress
