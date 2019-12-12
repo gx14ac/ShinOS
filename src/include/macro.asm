@@ -65,3 +65,31 @@ struc ring_buff
     .wp    resd 1               ; write position
     .item  resb RING_ITEM_SIZE  ; buffer
 endstruc
+
+;*********************************************
+; setting for descriptor base & limit addr
+;*********************************************
+; ** arg
+;        first arg  : descriptor addr
+;        second arg : base addr
+;        third arg  : limit
+;*********************************************
+%macro set_desc 2-*
+    push eax                    ; // ax, ah, al
+    push edi                    ; // designated remember addr
+
+    mov edi  %1                  ; descriptor addr
+    mov eax, %2                  ; base addr
+
+    %if 3 == %0
+        mov [edi + 0], %3        ; setting limit
+    %endif
+
+    mov [edi + 2], ax            ; base([15:0])
+    shr eax, 16
+    mov [edi + 4], al            ; base([23:16])
+    mov [edi + 7], ah            ; base([31:24])
+
+    pop edi
+    pop eax
+%endmacro

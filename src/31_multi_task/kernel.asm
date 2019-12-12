@@ -20,6 +20,37 @@ kernel:
     add   eax, ebx                   ; eax += ebx
     mov   [FONT_ADDR], eax           ; FONT_ADDR[0] = eax
 
+    ;******************************
+    ; configure tss descriptor
+    ;******************************
+    set_desc GDT.tss_0, TSS_0   ; conf tss for task0
+    set_desc GDT.tss_1, TSS_1   ; conf tss for task1
+
+    ;***********************************************
+    ; configure LDT
+    ;***********************************************
+    ; descriptor addr   : ldt descriptor addr
+    ; base addr         : ldt base addr
+    ; descriptor limit  : limit
+    ;***********************************************
+    set_desc GDT.ldt, LDT, word LDT_LIMIT
+
+    ;********************
+    ; load GDT(reconf)
+    ;********************
+    lgdt [GDTR]                 ; reload global descriptor table
+
+    ;********************
+    ; conf stack
+    ;********************
+    mov esp, SP_TASK_0          ; set up a stack for task 0
+
+    ;****************************
+    ; initialize task register
+    ;****************************
+    mov ax, SS_TASK_0
+    ltr ax
+
     ;*******************************
     ; initialize
     ;*******************************
@@ -47,10 +78,6 @@ kernel:
     ;outp 0xA1, 0x02             ; SLAVE.ICW3 = 0x02
     ;outp 0xA1, 0x01             ; SLAVE.ICW4 = 0x01
     ;outp 0xA1, 0xFF             ; interrupt slave mask
-
-    ;************************************************************
-    ;
-    ;************************************************************
 
     set_vect 0x00, int_zero_div    ; register interrupt process : zero divide
     set_vect 0x20, int_timer       ; register interrupt process : timer // master pic IRQ0
