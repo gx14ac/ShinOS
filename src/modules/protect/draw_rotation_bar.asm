@@ -24,4 +24,4 @@ draw_rotation_bar:
     ret
 ALIGN 4, db 0
 .index: dd 0
-.table: dd "|/-\"
+.table: db "|/-\"
