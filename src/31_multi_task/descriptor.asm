@@ -22,3 +22,34 @@ CS_TASK_1 equ (.cs_task_1 - LDT) | 4 ; designated task1 cs selecter
 DS_TASK_1 equ (.ds_task_1 - LDT) | 4 ; designated task1 ds selecter
 
 LDT_LIMIT equ .end - LDT - 1
+
+;********************************************
+; TSS(Task State Segment) for TASK_0
+;********************************************
+TSS_0:
+.link:   dd 0
+.esp0:   dd SP_TASK_0 - 512
+.ss0:    dd DS_KERNEL
+.esp1:   dd 0
+.ss1:    dd 0
+.esp2:   dd 0
+.ss2:    dd 0
+.cr3:    dd 0
+.eip:    dd 0
+.eflags: dd 0
+.eax:    dd 0
+.ecx:    dd 0
+.edx:    dd 0
+.ebx:    dd 0
+.esp:    dd 0
+.ebp:    dd 0
+.esi:    dd 0
+.edi:    dd 0
+.es:     dd 0
+.cs:     dd 0
+.ss:     dd 0
+.ds:     dd 0
+.fs:     dd 0
+.gs:     dd 0
+.ldt:    dd 0
+.io:     dd 0
