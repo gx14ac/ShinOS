@@ -23,8 +23,8 @@ kernel:
     ;******************************
     ; configure tss descriptor
     ;******************************
-    set_desc GDT.tss_0, TSS_0   ; conf tss for task0
-    set_desc GDT.tss_1, TSS_1   ; conf tss for task1
+    set_desc	GDT.tss_0, TSS_0   ; conf tss for task0
+    set_desc	GDT.tss_0, TSS_1   ; conf tss for task1
 
     ;***********************************************
     ; configure LDT
@@ -86,6 +86,7 @@ kernel:
 
     ; interrupt enable device setting
     cdecl rtc_int_en, 0x10
+    cdecl int_en_timer0
 
     ;***********************************************
     ; configuration IMR(interrupt mask register)
@@ -126,7 +127,6 @@ kernel:
 
     ; display the keycode
     cdecl draw_key, 2, 29, _KEY_BUFF
-
 .10E:
     jmp .10L
 
@@ -138,6 +138,13 @@ ALIGN 4, db 0
 ALIGN 4, db 0
 FONT_ADDR:	dd	0
 RTC_TIME:	dd	0
+
+;****************************
+; Tasks
+;****************************
+%include "descriptor.asm"
+%include "modules/int_timer.asm"
+%include "tasks/task_1.asm"
 
 ;****************************
 ; Modules
@@ -158,10 +165,8 @@ RTC_TIME:	dd	0
 %include "../modules/protect/pic.asm"
 %include "../modules/protect/int_keyboard.asm"
 %include "../modules/protect/ring_buff.asm"
-
 %include "../modules/protect/draw_rotation_bar.asm"
 %include "../modules/protect/timer.asm"
-%include "modules/int_timer.asm"
 
 ;****************************
 ; Padding
