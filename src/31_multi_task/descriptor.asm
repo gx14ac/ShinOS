@@ -65,7 +65,7 @@ TSS_1:
 ;*****************************
 ; Global Descriptor Table
 ;*****************************
-GDT:			dq	0x0000000000000000			; NULL
+GDT:			dq  0x0000000000000000          ; NULL
 .cs_kernel:		dq	0x00CF9A000000FFFF		; CODE 4G
 .ds_kernel:		dq	0x00CF92000000FFFF		; DATA 4G
 .ldt			dq	0x0000820000000000			; LDT descriptor
@@ -89,8 +89,8 @@ GDTR: dw GDT.end - GDT - 1
 ; Local Descriptor Table
 ;********************************************
 LDT: dq 0x0000000000000000      ; NULL
-.cs_task_0: dq 0x00CF9A000000FFFF  ; CODE 4G
-.ds_task_0: dq 0x00CF92000000FFFF  ; DATA 4G
+.cs_task_0: dq  0x00CF9A000000FFFF  ; CODE 4G
+.ds_task_0: dq  0x00CF92000000FFFF  ; DATA 4G
 .cs_task_1: dq	0x00CF9A000000FFFF ; CODE 4G
 .ds_task_1: dq	0x00CF92000000FFFF ; DATA 4G
 .end:

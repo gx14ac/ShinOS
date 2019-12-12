@@ -1,3 +1,6 @@
+;****************************
+; Macro
+;****************************
 %include "../include/define.asm"
 %include "../include/macro.asm"
 
@@ -78,6 +81,10 @@ kernel:
     ;outp 0xA1, 0x02             ; SLAVE.ICW3 = 0x02
     ;outp 0xA1, 0x01             ; SLAVE.ICW4 = 0x01
     ;outp 0xA1, 0xFF             ; interrupt slave mask
+
+    ;************************************************************
+    ;                         PIC Map
+    ;************************************************************
 
     set_vect 0x00, int_zero_div    ; register interrupt process : zero divide
     set_vect 0x20, int_timer       ; register interrupt process : timer // master pic IRQ0
@@ -165,8 +172,8 @@ RTC_TIME:	dd	0
 %include "../modules/protect/pic.asm"
 %include "../modules/protect/int_keyboard.asm"
 %include "../modules/protect/ring_buff.asm"
-%include "../modules/protect/draw_rotation_bar.asm"
 %include "../modules/protect/timer.asm"
+%include "../modules/protect/draw_rotation_bar.asm"
 
 ;****************************
 ; Padding
