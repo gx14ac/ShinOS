@@ -78,8 +78,8 @@ endstruc
     push eax                    ; // ax, ah, al
     push edi                    ; // designated remember addr
 
-    mov edi  %1                  ; descriptor addr
-    mov eax, %2                  ; base addr
+    mov edi,  %1                  ; descriptor addr
+    mov eax,  %2                  ; base addr
 
     %if 3 == %0
         mov [edi + 0], %3        ; setting limit
