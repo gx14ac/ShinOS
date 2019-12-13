@@ -25,6 +25,13 @@ draw_char:
     push esi
     push edi
 
+;****************************
+; test and set
+;****************************
+%ifdef USE_TEST_AND_SET
+    cdecl test_and_Set, IN_USE  ; TEST_AND_SET(IN_USE) // waiting for free resource
+%endif
+
     ;****************************
     ; copy source font address
     ;****************************
@@ -62,6 +69,13 @@ draw_char:
     cdecl vga_set_write_plane, 0x01                  ; write plane (Blue)
     cdecl vram_font_copy,      esi, edi, 0x01, ebx
 
+%ifdef USE_TEST_AND_SET
+    ;****************************
+    ; test and set
+    ;****************************
+    mov [IN_USE], dword 0       ; clear global variable value
+%endif
+
     pop edi
     pop esi
     pop edx
@@ -73,3 +87,8 @@ draw_char:
     pop ebp
 
     ret
+
+%ifdef USE_TEST_AND_SET
+ALIGN 4, db 0
+IN_USE: dd 0
+%endif
