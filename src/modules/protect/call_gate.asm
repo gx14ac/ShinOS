@@ -1,5 +1,5 @@
 ;******************************************************************************************
-; call intersegmnetal
+; call intersegmental
 ; called by inter-segment call instruction, function code segment comes into ebp + 4
 ;******************************************************************************************
 call_gate:
