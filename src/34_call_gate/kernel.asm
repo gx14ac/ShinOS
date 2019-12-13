@@ -29,6 +29,11 @@ kernel:
     set_desc	GDT.tss_0, TSS_0   ; conf tss for task0
     set_desc	GDT.tss_1, TSS_1   ; conf tss for task1
 
+    ;******************************
+    ; configure call gate
+    ;******************************
+    set_gate GDT.call_gate, call_gate
+
     ;***********************************************
     ; configure LDT
     ;***********************************************
