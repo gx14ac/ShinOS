@@ -13,7 +13,6 @@ KERNEL_SECT      equ (KERNEL_SIZE / SECT_SIZE)
 VECT_BASE        equ 0x0010_0000               ; 0010_0000:0010_07FF
 
 STACK_BASE       equ 0x0010_3000               ; task dedicated stack area
-
 STACK_SIZE       equ 1024                      ; size per stack(0x400)
 
 SP_TASK_0        equ STACK_BASE + (STACK_SIZE * 1) ; 0x0010_3400

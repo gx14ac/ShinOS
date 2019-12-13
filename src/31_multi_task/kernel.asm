@@ -1,3 +1,6 @@
+;****************************
+; Macro
+;****************************
 %include "../include/define.asm"
 %include "../include/macro.asm"
 
@@ -23,8 +26,8 @@ kernel:
     ;******************************
     ; configure tss descriptor
     ;******************************
-    set_desc GDT.tss_0, TSS_0   ; conf tss for task0
-    set_desc GDT.tss_1, TSS_1   ; conf tss for task1
+    set_desc	GDT.tss_0, TSS_0   ; conf tss for task0
+    set_desc	GDT.tss_1, TSS_1   ; conf tss for task1
 
     ;***********************************************
     ; configure LDT
@@ -40,16 +43,16 @@ kernel:
     ;********************
     lgdt [GDTR]                 ; reload global descriptor table
 
-    ;********************
-    ; conf stack
-    ;********************
+    ;******************************
+    ; configuration stack pointer
+    ;******************************
     mov esp, SP_TASK_0          ; set up a stack for task 0
 
     ;****************************
     ; initialize task register
     ;****************************
-    mov ax, SS_TASK_0
-    ltr ax
+    mov ax, SS_TASK_0           ; ax = SS_TASK_0(start address)
+    ltr ax                      ; ltr(load task register), tr(task register) = ax
 
     ;*******************************
     ; initialize
@@ -79,6 +82,10 @@ kernel:
     ;outp 0xA1, 0x01             ; SLAVE.ICW4 = 0x01
     ;outp 0xA1, 0xFF             ; interrupt slave mask
 
+    ;************************************************************
+    ;                         PIC Map
+    ;************************************************************
+
     set_vect 0x00, int_zero_div    ; register interrupt process : zero divide
     set_vect 0x20, int_timer       ; register interrupt process : timer // master pic IRQ0
     set_vect 0x21, int_keyboard    ; register interrupt process : kbc   // default IRQ
@@ -86,6 +93,7 @@ kernel:
 
     ; interrupt enable device setting
     cdecl rtc_int_en, 0x10
+    cdecl int_en_timer0
 
     ;***********************************************
     ; configuration IMR(interrupt mask register)
@@ -105,6 +113,12 @@ kernel:
     ; show the char
     cdecl draw_str, 25, 14, 0x010F, .s0 ; draw_str()
 
+    ;*************************************
+    ; call the task
+    ; ** call task:0(eip)
+    ; eip is execution address location
+    ;*************************************
+    call SS_TASK_1:0            ; // call the task1
 .10L:
     ; show the clock
     mov   eax, [RTC_TIME]               ; get the oclock
@@ -120,7 +134,6 @@ kernel:
 
     ; display the keycode
     cdecl draw_key, 2, 29, _KEY_BUFF
-
 .10E:
     jmp .10L
 
@@ -132,6 +145,13 @@ ALIGN 4, db 0
 ALIGN 4, db 0
 FONT_ADDR:	dd	0
 RTC_TIME:	dd	0
+
+;****************************
+; Tasks
+;****************************
+%include "descriptor.asm"
+%include "modules/int_timer.asm"
+%include "tasks/task_1.asm"
 
 ;****************************
 ; Modules
@@ -152,10 +172,8 @@ RTC_TIME:	dd	0
 %include "../modules/protect/pic.asm"
 %include "../modules/protect/int_keyboard.asm"
 %include "../modules/protect/ring_buff.asm"
-
-%include "../modules/protect/draw_rotation_bar.asm"
 %include "../modules/protect/timer.asm"
-%include "modules/int_timer.asm"
+%include "../modules/protect/draw_rotation_bar.asm"
 
 ;****************************
 ; Padding
