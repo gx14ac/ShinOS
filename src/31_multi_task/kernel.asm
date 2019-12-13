@@ -27,7 +27,7 @@ kernel:
     ; configure tss descriptor
     ;******************************
     set_desc	GDT.tss_0, TSS_0   ; conf tss for task0
-    set_desc	GDT.tss_0, TSS_1   ; conf tss for task1
+    set_desc	GDT.tss_1, TSS_1   ; conf tss for task1
 
     ;***********************************************
     ; configure LDT
