@@ -35,7 +35,11 @@ draw_str:
     lodsb
     cmp al, 0
     je .10E
+%ifdef USE_SYSTEM_CALL
+    int 0x81
+%else
     cdecl draw_char, ecx, edx, ebx, eax
+%endif
 
     inc ecx                     ; ecx++ // add col
     cmp ecx, 80                 ; if (80 <= ecx) // 80 characters or more ?
