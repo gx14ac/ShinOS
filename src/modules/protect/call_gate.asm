@@ -1,5 +1,5 @@
 ;******************************************************************************************
-; call intersegmnetal
+; call intersegmental
 ; called by inter-segment call instruction, function code segment comes into ebp + 4
 ;******************************************************************************************
 call_gate:
@@ -32,7 +32,7 @@ call_gate:
     ;*****************
     mov eax, dword[ebp + 12]           ; eax = X
     mov ebx, dword[ebp + 16]           ; ebx = Y
-    mov ecx. dword[ebp + 20]           ; ecx = color
+    mov ecx, dword[ebp + 20]           ; ecx = color
     mov edx, dword[ebp + 24]           ; edx = char
     cdecl draw_str, eax, ebx, ecx, edx ; draw_str()
 
