@@ -169,6 +169,7 @@ RTC_TIME:	dd	0
 ;****************************
 %include "descriptor.asm"
 %include "modules/int_timer.asm"
+%include "modules/paging.asm"
 %include "tasks/task_1.asm"
 %include "tasks/task_2.asm"
 %include "tasks/task_3.asm"
