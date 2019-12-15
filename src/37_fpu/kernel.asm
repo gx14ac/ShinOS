@@ -100,7 +100,7 @@ kernel:
     ;************************************************************
 
     set_vect 0x00, int_zero_div              ; register interrupt process : zero divide
-    set_vect 0x07, in_nm                     ; register interrupt process : device unavailable
+    set_vect 0x07, int_nm                    ; register interrupt process : device unavailable
     set_vect 0x20, int_timer                 ; register interrupt process : timer // master pic IRQ0
     set_vect 0x21, int_keyboard              ; register interrupt process : kbc   // default IRQ
     set_vect 0x28, int_rtc                   ; register interrupt process : rtc   // slave pic IRQ0
@@ -129,13 +129,6 @@ kernel:
     ; show the char
     cdecl draw_str, 25, 14, 0x010F, .s0 ; draw_str()
 .10L:
-    ;*************************************
-    ; call the task
-    ; ** call task:0(eip)
-    ; eip is execution address location
-    ;*************************************
-    call SS_TASK_1:0            ; // call the task1
-
     ; display the rotation bar
     cdecl draw_rotation_bar
 
@@ -164,6 +157,7 @@ RTC_TIME:	dd	0
 %include "descriptor.asm"
 %include "modules/int_timer.asm"
 %include "tasks/task_1.asm"
+%include "tasks/task_2.asm"
 
 ;****************************
 ; Modules
@@ -188,6 +182,8 @@ RTC_TIME:	dd	0
 %include "../modules/protect/draw_rotation_bar.asm"
 %include "../modules/protect/call_gate.asm"
 %include "../modules/protect/trap_gate.asm"
+%include "../modules/protect/test_and_set.asm"
+%include "../modules/protect/int_nm.asm"
 
 ;****************************
 ; Padding
