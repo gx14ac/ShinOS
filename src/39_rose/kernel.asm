@@ -118,9 +118,9 @@ kernel:
     outp 0x21, 0b_1111_1000      ; enable interrupt : pic/kbc/timer
     outp 0xA1, 0b_1111_1110      ; enalbe interrupt : rtc
 
-    ;***********************************************
+    ;*****************************
     ; interrupt enable cpu
-    ;***********************************************
+    ;*****************************
     sti
 
     ; show the font list

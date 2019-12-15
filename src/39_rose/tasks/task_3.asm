@@ -46,7 +46,7 @@ task_3:
     ; draw X Position
     ;*********************
     mov	eax, [esi + rose.x0]
-    mov	ebx, [esi - 8]
+    mov	ebx, [ebp - 8]
     mov	ecx, [esi + rose.x1]
 
     cdecl   draw_line, eax, ebx, ecx, ebx, dword [esi + rose.color_x] ; X position
@@ -74,7 +74,7 @@ task_3:
     ; amplitube
     ;****************
     mov	eax, [esi + rose.x1] ; eax = x1 position
-    sub	ebx, [esi + rose.x0] ; eax -= x0 position
+    sub	eax, [esi + rose.x0] ; eax -= x0 position
     shr	eax, 1               ; eax /= 2
     mov	ebx, eax             ; ebx = eax
     shr	ebx, 4               ; ebx /= 16

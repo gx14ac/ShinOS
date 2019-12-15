@@ -193,4 +193,5 @@ CS_TASK_2 equ (.cs_task_2 - LDT) | 4 | 3 ; designated task2 cs segment selecter,
 DS_TASK_2 equ (.ds_task_2 - LDT) | 4 | 3 ; designated task2 ds segment selecter, privillege level 3
 CS_TASK_3 equ (.cs_task_3 - LDT) | 4 | 3 ; designated task3 cs segment selecter, privillege level 3
 DS_TASK_3 equ (.ds_task_3 - LDT) | 4 | 3 ; designated task3 ds segment selecter, privillege level 3
+
 LDT_LIMIT equ .end - LDT - 1
