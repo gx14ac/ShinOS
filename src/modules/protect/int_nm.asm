@@ -37,7 +37,7 @@ int_nm:
     ;***********************************
     ; saving last time fpu context
     ;***********************************
-    mov ebx, edi                ; last time tass
+    mov  ebx, edi               ; last time tass
     call get_tss_base           ; get tss addr
     call save_fpu_context       ; saving fpu context
 

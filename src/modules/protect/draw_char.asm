@@ -29,7 +29,7 @@ draw_char:
 ; test and set
 ;****************************
 %ifdef USE_TEST_AND_SET
-    cdecl test_and_Set, IN_USE  ; TEST_AND_SET(IN_USE) // waiting for free resource
+    cdecl test_and_set, IN_USE  ; TEST_AND_SET(IN_USE) // waiting for free resource
 %endif
 
     ;****************************
