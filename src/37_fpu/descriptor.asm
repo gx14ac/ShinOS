@@ -29,6 +29,7 @@ TSS_0:
 .gs:     dd 0                   ; 92:gs
 .ldt:    dd 0                   ;*96:ldt
 .io:     dd 0                   ;100:I/O MapBaseAddress
+.fp_save: times 108 + 4 db 0    ; FPU context storage area
 
 ;**************************************
 ; TSS(Task State Segment) for TASK_1
@@ -61,38 +62,40 @@ TSS_1:
 .gs:     dd DS_TASK_1           ;  92:gs(data segment selector for task1)
 .ldt:    dd SS_LDT              ;* 96:ldt segment selecter
 .io:     dd 0                   ; 100:I/O MapBaseAddress
+.fp_save: times 108 + 4 db 0    ; FPU context storage area
 
 ;**************************************
 ; TSS(Task State Segment) for TASK_1
 ; Size 104 bytes
 ;**************************************
 TSS_2:
-.link:   dd 0
-.esp0:   dd SP_TASK_2 - 512     ;*  4:esp0
-.ss0:    dd DS_KERNEL           ;*  8:
-.esp1:   dd 0                   ;* 12:esp1
-.ss1:    dd 0                   ;* 16:
-.esp2:   dd 0                   ;* 20:esp2
-.ss2:    dd 0                   ;* 24:
-.cr3:    dd 0                   ;* 28:CR3(PDBR)
-.eip:    dd task_2              ;  32:eip(start task1 address)
-.eflags: dd 0x0202              ;  36:EFLAGS(initial eflags value)
-.eax:    dd 0                   ;  40:eax
-.ecx:    dd 0                   ;  44:ecx
-.edx:    dd 0                   ;  48:edx
-.ebx:    dd 0                   ;  52:ebx
-.esp:    dd SP_TASK_2           ;  56:esp(initial stack pointer)
-.ebp:    dd 0                   ;  60:ebp
-.esi:    dd 0                   ;  64:esi
-.edi:    dd 0                   ;  68:edi
-.es:     dd DS_TASK_2           ;  72:es
-.cs:     dd CS_TASK_2           ;  76:cs(code segment selector for task1)
-.ss:     dd DS_TASK_2           ;  80:ss(data segment selector for task1)
-.ds:     dd DS_TASK_2           ;  84:ds(data segment selector for task1)
-.fs:     dd DS_TASK_2           ;  88:fs(data segment selector for task1)
-.gs:     dd DS_TASK_2           ;  92:gs(data segment selector for task1)
-.ldt:    dd SS_LDT              ;* 96:ldt segment selecter
-.io:     dd 0                   ; 100:I/O MapBaseAddress
+.link:    dd 0
+.esp0:    dd SP_TASK_2 - 512     ;*  4:esp0
+.ss0:     dd DS_KERNEL           ;*  8:
+.esp1:    dd 0                   ;* 12:esp1
+.ss1:     dd 0                   ;* 16:
+.esp2:    dd 0                   ;* 20:esp2
+.ss2:     dd 0                   ;* 24:
+.cr3:     dd 0                   ;* 28:CR3(PDBR)
+.eip:     dd task_2              ;  32:eip(start task1 address)
+.eflags:  dd 0x0202              ;  36:EFLAGS(initial eflags value)
+.eax:     dd 0                   ;  40:eax
+.ecx:     dd 0                   ;  44:ecx
+.edx:     dd 0                   ;  48:edx
+.ebx:     dd 0                   ;  52:ebx
+.esp:     dd SP_TASK_2           ;  56:esp(initial stack pointer)
+.ebp:     dd 0                   ;  60:ebp
+.esi:     dd 0                   ;  64:esi
+.edi:     dd 0                   ;  68:edi
+.es:      dd DS_TASK_2           ;  72:es
+.cs:      dd CS_TASK_2           ;  76:cs(code segment selector for task1)
+.ss:      dd DS_TASK_2           ;  80:ss(data segment selector for task1)
+.ds:      dd DS_TASK_2           ;  84:ds(data segment selector for task1)
+.fs:      dd DS_TASK_2           ;  88:fs(data segment selector for task1)
+.gs:      dd DS_TASK_2           ;  92:gs(data segment selector for task1)
+.ldt:     dd SS_LDT              ;* 96:ldt segment selecter
+.io:      dd 0                   ; 100:I/O MapBaseAddress
+.fp_save: times 108 + 4 db 0    ; FPU context storage area
 
 ;*****************************
 ; Global Descriptor Table
