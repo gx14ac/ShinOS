@@ -73,6 +73,7 @@ kernel:
     ;*******************************
     cdecl    init_int              ; initialize interrupt vector
     cdecl    init_pic              ; initialize interrupt controller
+    cdecl    init_page             ; initialize paging
 
     ;************************************************************
     ;                         PIC Map
@@ -117,6 +118,17 @@ kernel:
     ;***********************************************
     outp 0x21, 0b_1111_1000      ; enable interrupt : pic/kbc/timer
     outp 0xA1, 0b_1111_1110      ; enalbe interrupt : rtc
+
+    ;********************
+    ; enable paging
+    ;********************
+    mov	eax, CR3_BASE
+    mov	cr3, eax
+
+    mov	eax, cr0            ; set the pg bit
+    or	eax, (1 << 31)          ; cr0 |= pg
+    mov	cr0, eax
+    jmp	$ + 2               ; FLUSH()
 
     ;*****************************
     ; interrupt enable cpu
