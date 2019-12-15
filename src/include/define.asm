@@ -18,4 +18,4 @@ STACK_SIZE       equ 1024                      ; size per stack(0x400)
 SP_TASK_0        equ STACK_BASE + (STACK_SIZE * 1) ; 0x0010_3400
 SP_TASK_1        equ STACK_BASE + (STACK_SIZE * 2) ; 0x0010_3800
 SP_TASK_2        equ STACK_BASE + (STACK_SIZE * 3) ; 0x0010_4200
-SP_TASK_3        equ STACK_BASE + (STACK_SIZE * 4) ; 0x0010_4200
+SP_TASK_3        equ STACK_BASE + (STACK_SIZE * 4) ; 0x0010_4600
