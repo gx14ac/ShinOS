@@ -12,7 +12,7 @@ task_2:
     ; fild is set FPU integer stack ; ---------+---------+---------|---------|---------|---------|
     fild  dword [.c1000]            ;     1000 |xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|
     fldpi                           ;       pi |    1000 |xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|
-    fidiv dword [.180]              ;   pi/180 |    1000 |xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|
+    fidiv dword [.c180]             ;   pi/180 |    1000 |xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|
     fldpi                           ;       pi |  pi/180 |    1000 |xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|
     fadd st0, st0                   ;     2*pi |  pi/180 |    1000 |xxxxxxxxx|xxxxxxxxx|xxxxxxxxx|
     fldz                            ;   θ = 0 |    2*pi |  pi/180 |    1000  |xxxxxxxxx|xxxxxxxxx|
@@ -28,6 +28,7 @@ task_2:
     fld   st0
     fsin
     fmul  st0, st4
+
     fbstp [.bcd]
 
     mov   eax, [.bcd]           ; eax = 1000 * sin(t)
@@ -38,12 +39,12 @@ task_2:
 
     shr   ebx, 4                ; ebx >> 4
     and   ebx, 0x0F0F           ; mask in upper 4bit
-    or    eax, 0x3030           ; setting 0x3 in uppper 4bit
+    or    ebx, 0x3030           ; setting 0x3 in uppper 4bit
 
     mov   [.s2 + 0], bh         ; 1digits
     mov   [.s3 + 0], ah         ; decimal 2digits
     mov   [.s3 + 1], bl         ; decimal 3digits
-    mov   [.s3 + 1], al         ; decimal 4digits
+    mov   [.s3 + 2], al         ; decimal 4digits
 
     mov   eax, 7                ; display of sign
     bt    [.bcd + 9], eax       ; cf = bcd[9] & 0x80
@@ -57,9 +58,21 @@ task_2:
 .10E:                           ; }
     cdecl draw_str, 72, 1, 0x07, .s1 ;draw_str(.s1)
 
+    mov ecx, 20                 ; ecx = 20
+.20L: mov eax, [TIMER_COUNT]
+.21L: cmp [TIMER_COUNT], eax
+    je .21L
+    loop .20L
+
+    jmp .10L
+
+ALIGN 4, db 0
 .c1000: dd 1000
 .c180:  dd 180
-.s0: db "Task-2", 0
+
+.bcd: times 10 db 0x00
+
+.s0 db "Task-2", 0
 .s1: db "-"
-.s2: db "0"
+.s2: db "0."
 .s3: db "000", 0
