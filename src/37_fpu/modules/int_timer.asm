@@ -21,13 +21,18 @@ int_timer:
     ; switch the task
     ;******************
     str ax                      ; ax = tr // current task register
-    cmp ax, SS_TASK_0           ; case (ax)
+    cmp ax, SS_TASK_0           ; case (SS_TASK_0)
     je .11L                     ; { // (ax == SS_TASK_0)
+    cmp ax, SS_TASK_1           ; case (SS_TASK_1)
+    je .12L                      ; {
     jmp SS_TASK_0:0             ; // switching task0
     jmp .10E                    ; break
 .11L:
     jmp SS_TASK_1:0             ; // switching task1
     jmp .10E                    ; break
+.12L:
+    jmp SS_TASK_2:0
+    jmp .10E
 .10E:
 
     pop es
