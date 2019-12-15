@@ -135,5 +135,5 @@ struc rose
     .color_f resd 1
     .color_b resd 1
 
-    .title   resd 16
+    .title   resb 16
 endstruc
