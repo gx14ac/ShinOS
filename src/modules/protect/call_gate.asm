@@ -14,7 +14,7 @@ call_gate:
     ; ebp + 0 | base value
     ;*******************************************
     push ebp
-    mov ebp, esp
+    mov  ebp, esp
 
     pusha
     push ds
