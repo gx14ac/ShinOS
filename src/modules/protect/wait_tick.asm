@@ -1,7 +1,7 @@
 wait_tick:
 
     push ebp
-    push ebp, esp
+    mov  ebp, esp
 
     push eax
     push ecx
