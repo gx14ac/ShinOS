@@ -29,6 +29,6 @@ CR3_TASK_4       equ 0x0020_0000 ; page transfer table 4
 CR3_TASK_5       equ 0x0020_2000 ; page transfer table 5
 CR3_TASK_6       equ 0x0020_4000 ; page transfer table 6
 
-PRAM_TASK_4      equ 0x0010_8000 ; draw parameter : designated task4
-PRAM_TASK_5      equ 0x0010_9000 ; draw parameter : designated task5
-PRAM_TASK_6      equ 0x0010_A000 ; draw parameter : designated task6
+PARAM_TASK_4      equ 0x0010_8000 ; draw parameter : designated task4
+PARAM_TASK_5      equ 0x0010_9000 ; draw parameter : designated task5
+PARAM_TASK_6      equ 0x0010_A000 ; draw parameter : designated task6
