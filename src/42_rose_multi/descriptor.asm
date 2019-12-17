@@ -228,6 +228,9 @@ GDT:			dq  0x0000000000000000          ; NULL
 .tss_1:             dq  0x0000890000000067      ; TSS descripto
 .tss_2:             dq  0x0000890000000067      ; TSS descriptor
 .tss_3:             dq  0x0000890000000067      ; TSS descriptor
+.tss_4:             dq  0x0000890000000067      ; TSS descriptor
+.tss_5:             dq  0x0000890000000067      ; TSS descriptor
+.tss_6:             dq  0x0000890000000067      ; TSS descriptor
 .call_gate:     dq  0x0000EC0400080000          ; 386 call gate (DPL = 3, count = 4, SEL = 8)
 .end:
 
@@ -241,6 +244,9 @@ SS_TASK_0 equ .tss_0	 - GDT
 SS_TASK_1 equ .tss_1	 - GDT
 SS_TASK_2 equ .tss_2	 - GDT
 SS_TASK_3 equ .tss_3	 - GDT
+SS_TASK_4 equ .tss_4	 - GDT
+SS_TASK_5 equ .tss_5	 - GDT
+SS_TASK_6 equ .tss_6	 - GDT
 SS_GATE_0 equ .call_gate - GDT
 
 GDTR: dw GDT.end - GDT - 1
