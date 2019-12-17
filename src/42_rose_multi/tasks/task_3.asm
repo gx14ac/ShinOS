@@ -140,24 +140,85 @@ task_3:
 
 ALIGN 4, db 0
 DRAW_PARAM:
-  istruc	rose
-        at	rose.x0,		dd		 16
-        at	rose.y0,		dd		 32
-        at	rose.x1,		dd		416
-        at	rose.y1,		dd		432
+.t3:
+istruc	rose
+    at	rose.x0,		dd		 32			; 左上座標：X0
+    at	rose.y0,		dd		 32			; 左上座標：Y0
+    at	rose.x1,		dd		208			; 右下座標：X1
+    at	rose.y1,		dd		208			; 右下座標：Y1
 
-        at	rose.n,		dd		2
-        at	rose.d,		dd		1
+    at	rose.n,			dd		2			; 変数：n
+    at	rose.d,			dd		1			; 変数：d
 
-        at	rose.color_x,	dd		0x0007
-        at	rose.color_y,	dd		0x0007
-        at	rose.color_z,	dd		0x000F
-        at	rose.color_s,	dd		0x030F
-        at	rose.color_f,	dd		0x000F
-        at	rose.color_b,	dd		0x0003
+    at	rose.color_x,	dd		0x0007		; 描画色：X軸
+    at	rose.color_y,	dd		0x0007		; 描画色：Y軸
+    at	rose.color_z,	dd		0x000F		; 描画色：枠
+    at	rose.color_s,	dd		0x030F		; 描画色：文字
+    at	rose.color_f,	dd		0x000F		; 描画色：グラフ描画色
+    at	rose.color_b,	dd		0x0003		; 描画色：グラフ消去色
 
-        at	rose.title,	db		"Task-3", 0
-  iend
+    at	rose.title,		db		"Task-3", 0	; title
+iend
+
+.t4:
+istruc	rose
+    at	rose.x0,		dd		248			; 左上座標：X0
+    at	rose.y0,		dd		 32			; 左上座標：Y0
+    at	rose.x1,		dd		424			; 右下座標：X1
+    at	rose.y1,		dd		208			; 右下座標：Y1
+
+    at	rose.n,			dd		3			; 変数：n
+    at	rose.d,			dd		1			; 変数：d
+
+    at	rose.color_x,	dd		0x0007		; 描画色：X軸
+    at	rose.color_y,	dd		0x0007		; 描画色：Y軸
+    at	rose.color_z,	dd		0x000F		; 描画色：枠
+    at	rose.color_s,	dd		0x040F		; 描画色：文字
+    at	rose.color_f,	dd		0x000F		; 描画色：グラフ描画色
+    at	rose.color_b,	dd		0x0004		; 描画色：グラフ消去色
+
+    at	rose.title,		db		"Task-4", 0	; title
+iend
+
+.t5:
+istruc	rose
+    at	rose.x0,		dd		 32			; 左上座標：X0
+    at	rose.y0,		dd		272			; 左上座標：Y0
+    at	rose.x1,		dd		208			; 右下座標：X1
+    at	rose.y1,		dd		448			; 右下座標：Y1
+
+    at	rose.n,			dd		2			; 変数：n
+    at	rose.d,			dd		6			; 変数：d
+
+    at	rose.color_x,	dd		0x0007		; 描画色：X軸
+    at	rose.color_y,	dd		0x0007		; 描画色：Y軸
+    at	rose.color_z,	dd		0x000F		; 描画色：枠
+    at	rose.color_s,	dd		0x050F		; 描画色：文字
+    at	rose.color_f,	dd		0x000F		; 描画色：グラフ描画色
+    at	rose.color_b,	dd		0x0005		; 描画色：グラフ消去色
+
+    at	rose.title,		db		"Task-5", 0	; title
+iend
+
+.t6:
+istruc	rose
+    at	rose.x0,		dd		248			; 左上座標：X0
+    at	rose.y0,		dd		272			; 左上座標：Y0
+    at	rose.x1,		dd		424			; 右下座標：X1
+    at	rose.y1,		dd		448			; 右下座標：Y1
+
+    at	rose.n,			dd		4			; 変数：n
+    at	rose.d,			dd		6			; 変数：d
+
+    at	rose.color_x,	dd		0x0007		; 描画色：X軸
+    at	rose.color_y,	dd		0x0007		; 描画色：Y軸
+    at	rose.color_z,	dd		0x000F		; 描画色：枠
+    at	rose.color_s,	dd		0x060F		; 描画色：文字
+    at	rose.color_f,	dd		0x000F		; 描画色：グラフ描画色
+    at	rose.color_b,	dd		0x0006		; 描画色：グラフ消去色
+
+    at	rose.title,		db		"Task-6", 0	; title
+iend
 
 ;*****************************************************
 ; curve rose : init
