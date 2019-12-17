@@ -101,6 +101,9 @@ kernel:
     ;                         PIC Map
     ;************************************************************
 
+    ;*******************************************
+    ; ** format set_vect vector number, func
+    ;*******************************************
     set_vect 0x00, int_zero_div              ; register interrupt process : zero divide
     set_vect 0x07, int_nm                    ; register interrupt process : device unavailable
     set_vect 0x0E, int_pf                    ; register interrupt process : page fault
