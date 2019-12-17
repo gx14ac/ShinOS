@@ -37,6 +37,9 @@ kernel:
     set_desc	GDT.tss_1, TSS_1   ; conf tss for task1
     set_desc	GDT.tss_2, TSS_2   ; conf tss for task2
     set_desc	GDT.tss_3, TSS_3   ; conf tss for task3
+    set_desc    GDT.tss_4, TSS_4   ; conf tss for task4
+    set_desc    GDT.tss_5, TSS_5   ; conf tss for task4
+    set_desc    GDT.tss_6, TSS_6   ; conf tss for task4
 
     ;******************************
     ; configure call gate
