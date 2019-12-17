@@ -22,6 +22,9 @@ init_page:
     ; create page transfer table
     ;******************************
     cdecl    page_set_4m, CR3_BASE
+    cdecl    page_set_4m, CR3_BASE
+    cdecl    page_set_4m, CR3_BASE
+    cdecl    page_set_4m, CR3_BASE
 
     ;******************************
     ; create page transfer table
