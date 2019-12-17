@@ -22,14 +22,28 @@ init_page:
     ; create page transfer table
     ;******************************
     cdecl    page_set_4m, CR3_BASE
-    cdecl    page_set_4m, CR3_BASE
-    cdecl    page_set_4m, CR3_BASE
-    cdecl    page_set_4m, CR3_BASE
+    cdecl    page_set_4m, CR3_TASK_4
+    cdecl    page_set_4m, CR3_TASK_5
+    cdecl    page_set_4m, CR3_TASK_6
 
     ;******************************
     ; create page transfer table
     ;******************************
     mov	[0x0010_6000 + 0x107 * 4], dword 0
+
+    ;******************************
+    ; configure transfer address
+    ;******************************
+    mov	[0x0020_1000 + 0x107 * 4], dword PARAM_TASK_4 + 7
+    mov	[0x0020_3000 + 0x107 * 4], dword PARAM_TASK_5 + 7
+    mov	[0x0020_5000 + 0x107 * 4], dword PARAM_TASK_6 + 7
+
+    ;***************************
+    ; configure drawing param
+    ;***************************
+    cdecl    memcpy, PARAM_TASK_4, DRAW_PARAM.t4, rose_size
+    cdecl    memcpy, PARAM_TASK_5, DRAW_PARAM.t5, rose_size
+    cdecl    memcpy, PARAM_TASK_6, DRAW_PARAM.t6, rose_size
 
     popa
 
