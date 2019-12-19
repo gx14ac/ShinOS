@@ -84,7 +84,7 @@ draw_line:
     jg  .22F
 
     lea esi, [ebp - 20]
-    lea esi, [ebp - 8]
+    lea edi, [ebp - 8]
 
     jmp .22E
 .22F:
@@ -108,7 +108,9 @@ draw_line:
 
     mov ecx, eax
 %else
-    cdecl draw_pixel, dword[ebp - 8], dword[ebp - 20], dword[ebp + 24]
+    cdecl draw_pixel, dword[ebp - 8], \
+                      dword[ebp - 20], \
+                      dword[ebp + 24]
 %endif
     mov eax, [esi - 8]
     add [esi - 0], eax
