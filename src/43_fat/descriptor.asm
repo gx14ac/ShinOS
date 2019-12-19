@@ -252,22 +252,18 @@ SS_GATE_0 equ .call_gate - GDT
 GDTR: dw GDT.end - GDT - 1
       dd GDT
 
-;*********************
-; privillege level 0
-;*********************
-LDT: dq 0x0000000000000000      ; NULL
-.cs_task_0: dq  0x00CF9A000000FFFF  ; CODE 4G
-.ds_task_0: dq  0x00CF92000000FFFF  ; DATA 4G
-
-;*********************
-; privillege level 3
-;*********************
-.cs_task_1: dq	0x00CFFA000000FFFF  ; CODE 4G
-.ds_task_1: dq	0x00CFF2000000FFFF  ; DATA 4G
-.cs_task_2: dq	0x00CFFA000000FFFF  ; CODE 4G
-.ds_task_2: dq	0x00CFF2000000FFFF  ; DATA 4G
-.cs_task_3: dq	0x00CFFA000000FFFF  ; CODE 4G
-.ds_task_3: dq	0x00CFF2000000FFFF  ; DATA 4G
+LDT:			dq	0x0000000000000000			; NULL
+.cs_task_0:		dq	0x00CF9A000000FFFF			; CODE 4G
+.ds_task_0:		dq	0x00CF92000000FFFF			; DATA 4G
+.cs_task_1:		dq	0x00CFFA000000FFFF			; CODE 4G
+.ds_task_1:		dq	0x00CFF2000000FFFF			; DATA 4G
+.cs_task_2:		dq	0x00CFFA000000FFFF			; CODE 4G
+.ds_task_2:		dq	0x00CFF2000000FFFF			; DATA 4G
+.cs_task_3:		dq	0x00CFFA000000FFFF			; CODE 4G
+.ds_task_3:		dq	0x00CFF2000000FFFF			; DATA 4G
+.ds_task_4:		dq	0x00CFF2000000FFFF			; DATA 4G
+.ds_task_5:		dq	0x00CFF2000000FFFF			; DATA 4G
+.ds_task_6:		dq	0x00CFF2000000FFFF			; DATA 4G
 .end:
 
 ; `| 4` means that the segment granularity is 4k
@@ -280,17 +276,16 @@ DS_TASK_0 equ (.ds_task_0 - LDT) | 4     ; designated task0 ds segment selecter
 ;*********************
 ; privillege level 3
 ;*********************
-CS_TASK_1 equ (.cs_task_1 - LDT) | 4 | 3 ; designated task1 cs segment selecter, privillege level 3
-DS_TASK_1 equ (.ds_task_1 - LDT) | 4 | 3 ; designated task1 ds segment selecter, privillege level 3
-CS_TASK_2 equ (.cs_task_2 - LDT) | 4 | 3 ; designated task2 cs segment selecter, privillege level 3
-DS_TASK_2 equ (.ds_task_2 - LDT) | 4 | 3 ; designated task2 ds segment selecter, privillege level 3
-CS_TASK_3 equ (.cs_task_3 - LDT) | 4 | 3 ; designated task3 cs segment selecter, privillege level 3
-DS_TASK_3 equ (.ds_task_3 - LDT) | 4 | 3 ; designated task3 ds segment selecter, privillege level 3
-CS_TASK_4 equ (.cs_task_3 - LDT) | 4 | 3 ; designated task4 cs segment selecter, privillege level 3
-DS_TASK_4 equ (.ds_task_3 - LDT) | 4 | 3 ; designated task4 ds segment selecter, privillege level 3
-CS_TASK_5 equ (.cs_task_3 - LDT) | 4 | 3 ; designated task5 cs segment selecter, privillege level 3
-DS_TASK_5 equ (.ds_task_3 - LDT) | 4 | 3 ; designated task5 ds segment selecter, privillege level 3
-CS_TASK_6 equ (.cs_task_3 - LDT) | 4 | 3 ; designated task6 cs segment selecter, privillege level 3
-DS_TASK_6 equ (.ds_task_3 - LDT) | 4 | 3 ; designated task6 ds segment selecter, privillege level 3
+CS_TASK_0		equ	(.cs_task_0 - LDT) | 4
+DS_TASK_0		equ	(.ds_task_0 - LDT) | 4
+CS_TASK_1		equ	(.cs_task_1 - LDT) | 4 | 3
+DS_TASK_1		equ	(.ds_task_1 - LDT) | 4 | 3
+CS_TASK_2		equ	(.cs_task_2 - LDT) | 4 | 3
+DS_TASK_2		equ	(.ds_task_2 - LDT) | 4 | 3
+CS_TASK_3		equ	(.cs_task_3 - LDT) | 4 | 3
+DS_TASK_3		equ	(.ds_task_3 - LDT) | 4 | 3
+DS_TASK_4		equ	(.ds_task_4 - LDT) | 4 | 3
+DS_TASK_5		equ	(.ds_task_5 - LDT) | 4 | 3
+DS_TASK_6		equ	(.ds_task_6 - LDT) | 4 | 3
 
 LDT_LIMIT equ .end - LDT - 1
