@@ -22,7 +22,6 @@ kernel:
     ;****************
     ; Get Font Addr
     ;****************
-
     mov   esi, BOOT_LOAD + SECT_SIZE ; esi = 0x7C00 + 512
     movzx eax, word[esi + 0]         ; eax = [esi + 0] // segment
     movzx ebx, word[esi + 2]         ; ebx = [esi + 2] // offset
@@ -214,3 +213,8 @@ RTC_TIME:	dd	0
 ; Padding
 ;****************************
 times KERNEL_SIZE - ($ - $$) db 0x00
+
+;****************************
+; FAT
+;****************************
+%include "fat.asm"
