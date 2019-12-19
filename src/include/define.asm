@@ -32,3 +32,56 @@ CR3_TASK_6       equ 0x0020_4000 ; page transfer table 6
 PARAM_TASK_4      equ 0x0010_8000 ; draw parameter : designated task4
 PARAM_TASK_5      equ 0x0010_9000 ; draw parameter : designated task5
 PARAM_TASK_6      equ 0x0010_A000 ; draw parameter : designated task6
+
+
+;************************************************************************
+;	disk image
+;************************************************************************
+;(SECT/SUM)  file img
+;                       ____________
+;( 16/  0)   0000_0000 |       (8K) | boot
+;                      =            =
+;                      |____________|
+;( 16/ 16)   0000_2000 |       (8K) | kernel
+;                      =            =
+;                      |____________|
+;(256/ 32)   0000_4000 |     (128K) | FAT-1
+;                      |            |
+;                      |            |
+;                      =            =
+;                      |____________|
+;(256/288)   0002_4000 |     (128K) | FAT-2
+;                      |            |
+;                      |            |
+;                      =            =
+;                      |____________|
+;( 32/544)   0004_4000 |      (16K) | root directory field
+;                      |            | (32 sector /512entry)
+;                      =            =
+;                      |____________|
+;(   /576)   0004_8000 |            | data field
+;                      |            |
+;                      =            =
+;                      |            |
+;                      |____________|
+;(   /640)   0005_0000 |////////////|
+;                      |            |
+
+FAT_SIZE			equ		(1024 * 128)	; FAT-1/2
+ROOT_SIZE			equ		(1024 *  16)	; root directory field
+
+ENTRY_SIZE			equ		32				; entry size
+
+FAT_OFFSET			equ		(BOOT_SIZE + KERNEL_SIZE)
+FAT1_START			equ		(KERNEL_SIZE)
+FAT2_START			equ		(FAT1_START + FAT_SIZE)
+ROOT_START			equ		(FAT2_START + FAT_SIZE)
+FILE_START			equ		(ROOT_START + ROOT_SIZE)
+
+; file type
+ATTR_READ_ONLY		equ		0x01
+ATTR_HIDDEN         equ		0x02
+ATTR_SYSTEM		equ		0x04
+ATTR_VOLUME_ID		equ		0x08
+ATTR_DIRECTORY		equ		0x10
+ATTR_ARCHIVE		equ		0x20
