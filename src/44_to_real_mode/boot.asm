@@ -334,6 +334,17 @@ stage_6:
 .s0: db "6th stage...", 0x0A, 0x0D, 0x0A, 0x0D
     db "[Push SPACE key to protect mode...]", 0x0A, 0x0D, 0
 
+;*******************
+; reading file
+;*******************
+read_file:
+    cdecl    memcpy, ox7800, .s0, .s1 - .s0
+
+    ret
+
+.s0:    db    'File not found.', 0
+.s1:
+
 ;************************************
 ; GLOBAL DESCRIPTOR TABLE
 ; (Array of Segment Discriptor Table)
@@ -477,16 +488,16 @@ TO_REAL_MODE:
     mov	eax, cr0            ;
     mov	[.cr0_saved], eax   ; saving cr0 register
     mov	[.esp_saved], esp   ; saving esp register
-    sidt	[.idtr_save]        ; saving IDTR
+    sidt	[.idtr_save]        ; saving IDTR(Interrrupt Descriptor Table Register)
     lidt	[.idtr_real]        ; configure realmode interrupt process
 
     ;**********************************
     ; transition 16bit protect mode
     ;**********************************
-    jmp	0x0018:.bit16       ; cs = 0x18(code segment selector)
+    jmp	0x0018:.bit16       ; CS = 0x18(code segment selector)
 
 [BITS_16]
-.bit16:    mov    ax, 0x0020    ; ds = 0x20(date segmnet selector)
+.bit16:    mov    ax, 0x0020    ; DS = 0x20(data segmnet selector)
     mov	ds, ax
     mov	es, ax
     mov	ss, ax
@@ -494,17 +505,17 @@ TO_REAL_MODE:
     ;****************************************
     ; transition real mode(disable paging)
     ;****************************************
-    mov	eax, cr0
-    and	eax, 0x7FFFF_FFFE
+    mov	eax, cr0            ; clear the PG/PE bit
+    and	eax, 0x7FFFF_FFFE   ; CR0 &= ~(PG | PE) // invalid paging
     mov	cr0, eax
-    jmp	$ + 2
+    jmp	$ + 2               ; Flush()
 
     ;*****************************
     ; configure realmode segment
     ;*****************************
     jmp	0:.real             ; cs = 0x0000
 
-.real: mov    ax, 0x0000
+.real: mov  ax, 0x0000
     mov	ds, ax              ; ds = 0x0000
     mov	es, ax              ; es = 0x0000
     mov	ss, ax              ; ss = 0x0000
@@ -518,6 +529,8 @@ TO_REAL_MODE:
     ;************************************
     ; transition 16bit protect mode
     ;************************************
+
+    ; move to 16bit protect mode
     mov	eax, cr0            ; set the PE bit
     or	eax, 1                  ; CR0 | PE
     mov	cr0, eax
@@ -527,15 +540,36 @@ TO_REAL_MODE:
     ;*********************************
     ; transition 32 bit protect mode
     ;*********************************
-    DB	0x66                    ; override 32bit
+    DB	0x66                    ; override prefix
 
 [BITS_32]
     jmp	0x0008:.bit32       ; CS = 32bit
-.bit32:    mov    ax, 0x0010    ; DS = 32bit DS
+.bit32:  mov  ax, 0x0010        ; DS = 32bit DS
     mov	ds, ax
     mov	es, ax
     mov	ss, ax
 
+    ;**********************
+    ; reconfiure register
+    ;**********************
+    mov	esp, [.esp_saved]
+    mov	eax, [.cr0_saved]
+    mov	cr0, eax
+    lidt	[.idtr_save]
+
+.idtr_real:
+    dw	0x3FFF                  ; 8 * 256 - 1, idt limit
+    dd	0                       ; VECT_BASE, idt location
+
+.idtr_save:
+    dw	0                       ; limit
+    dd	0                       ; base
+
+.cr0_saved:
+    dd	0
+
+.esp_saved:
+    dd	0
 ;*******************************
 ; Padding
 ;*******************************
