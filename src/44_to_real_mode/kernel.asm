@@ -81,18 +81,18 @@ kernel:
     ;                         PIC Map
     ;************************************************************
 
-    ;****************************
+    ;***************
     ; master pic
-    ;****************************
+    ;***************
     ;outp 0x20, 0x11             ; MASTER.ICW1 = 0x11
     ;outp 0x21, 0x20             ; MASTER.ICW2 = 0x20
     ;outp 0x21, 0x04             ; MASTER.ICW3 = 0x04
     ;outp 0x21, 0x05             ; MASTER.ICW4 = 0x05
     ;outp 0x21, 0xFF             ; interrupt master mask
 
-    ;****************************
+    ;***************
     ; slave pic
-    ;****************************
+    ;***************
     ;outp 0xA0, 0x11             ; SLAVE.ICW1 = 0x11
     ;outp 0xA1, 0x28             ; SLAVE.ICW2 = 0x28 // rtc
     ;outp 0xA1, 0x02             ; SLAVE.ICW3 = 0x02
@@ -158,6 +158,23 @@ kernel:
 
     ; display the keycode
     cdecl draw_key, 2, 29, _KEY_BUFF
+
+    ;***********************
+    ; During key extrusion
+    ;***********************
+    mov	al, [.int_key]      ; AL = [.int_key] // keycode
+    cmp	al, 0x02            ; if ('1' == AL)
+    jne	.12E                ; {
+
+    call [BOOT_LOAD + BOOT_SIZE - 16] ; reading read mode file
+
+    ;***********************
+    ; show the file desc
+    ;***********************
+    mov	esi, 0x7800                 ; esi = destination addr
+    mov	[esi + 32], byte 0          ; [esi + 32] = 0
+    cdecl   draw_str, 0, 0, 0x0F04, esi ; draw_str()
+.12E:
 .10E:
     jmp .10L
 
