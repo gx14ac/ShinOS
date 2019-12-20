@@ -129,6 +129,7 @@ ACPI_DATA:                      ; ACPI data
  %include "../modules/real_mode/kbc.asm"
  %include "../modules/real_mode/lba_chs.asm"
  %include "../modules/real_mode/read_lba.asm"
+ %include "../modules/real_mode/memcpy.asm"
 
 stage_2:
       cdecl putc, .s0
@@ -338,7 +339,7 @@ stage_6:
 ; reading file
 ;*******************
 read_file:
-    cdecl    memcpy, ox7800, .s0, .s1 - .s0
+    cdecl    memcpy, 0x7800, .s0, .s1 - .s0
 
     ret
 
@@ -496,7 +497,7 @@ TO_REAL_MODE:
     ;**********************************
     jmp	0x0018:.bit16       ; CS = 0x18(code segment selector)
 
-[BITS_16]
+[BITS 16]
 .bit16:    mov    ax, 0x0020    ; DS = 0x20(data segmnet selector)
     mov	ds, ax
     mov	es, ax
@@ -506,7 +507,7 @@ TO_REAL_MODE:
     ; transition real mode(disable paging)
     ;****************************************
     mov	eax, cr0            ; clear the PG/PE bit
-    and	eax, 0x7FFFF_FFFE   ; CR0 &= ~(PG | PE) // invalid paging
+    and	eax, 0x7FFF_FFFE   ; CR0 &= ~(PG | PE) // invalid paging
     mov	cr0, eax
     jmp	$ + 2               ; Flush()
 
@@ -542,7 +543,7 @@ TO_REAL_MODE:
     ;*********************************
     DB	0x66                    ; override prefix
 
-[BITS_32]
+[BITS 32]
     jmp	0x0008:.bit32       ; CS = 32bit
 .bit32:  mov  ax, 0x0010        ; DS = 32bit DS
     mov	ds, ax
@@ -570,7 +571,14 @@ TO_REAL_MODE:
 
 .esp_saved:
     dd	0
-;*******************************
+
+;***********
 ; Padding
-;*******************************
+;***********
+times BOOT_SIZE - ($ - $$) - 16 db 0
+dd	TO_REAL_MODE                ; move to real mode program
+
+;***********
+; Padding
+;***********
 times BOOT_SIZE - ($ - $$) db 0
