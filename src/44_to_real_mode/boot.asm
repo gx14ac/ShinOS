@@ -18,7 +18,7 @@ entry:
     ; BPB(BIOS Parameter Block)
     ;****************************
     jmp   ipl                   ; 0x00( 3) Jump instruction to boot code
-    times 90 - ($ - $$) db 0x90 ;
+    times 3 - ($ - $$) db 0x90  ;
     db	  'Shin'                ; 0x03(  8) OEM Name
                                             ; -------- --------------------------------
     dw		512							; 0x0B( 2) sector byte count
@@ -130,6 +130,7 @@ ACPI_DATA:                      ; ACPI data
  %include "../modules/real_mode/lba_chs.asm"
  %include "../modules/real_mode/read_lba.asm"
  %include "../modules/real_mode/memcpy.asm"
+ %include "../modules/real_mode/memcmp.asm"
 
 stage_2:
       cdecl putc, .s0
@@ -332,7 +333,7 @@ stage_6:
 
     jmp stage_7
 
-.s0: db "6th stage...", 0x0A, 0x0D, 0x0A, 0x0D
+.s0  db "6th stage...", 0x0A, 0x0D, 0x0A, 0x0D
     db "[Push SPACE key to protect mode...]", 0x0A, 0x0D, 0
 
 ;*******************
@@ -456,6 +457,7 @@ CODE_32:
     mov ecx, (KERNEL_SIZE) / 4
     mov esi, BOOT_END
     mov edi, KERNEL_LOAD
+    cld
     rep movsd
 
     ;************************
@@ -558,8 +560,17 @@ TO_REAL_MODE:
     mov	cr0, eax
     lidt	[.idtr_save]
 
+    sti
+
+    popa
+
+    mov	esp, ebp
+    pop	ebp
+
+    ret
+
 .idtr_real:
-    dw	0x3FFF                  ; 8 * 256 - 1, idt limit
+    dw	0x3FF                   ; 8 * 256 - 1, idt limit
     dd	0                       ; VECT_BASE, idt location
 
 .idtr_save:
