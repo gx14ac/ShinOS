@@ -340,13 +340,107 @@ stage_6:
 ; reading file
 ;*******************
 read_file:
+    push	ax
+    push	bx
+    push	cx
+
     cdecl    memcpy, 0x7800, .s0, .s1 - .s0
+
+        ;---------------------------------------
+        ;
+        ;          |____________|
+        ; 0000_7600|            | FAT Buffer
+        ;          =            =
+        ;          |____________|
+        ; 0000_7800|            | Data Buffer
+        ;          =            =
+        ;          |____________|
+        ; 0000_7A00|            | Stack
+        ;          =            =
+        ;          |____________|
+        ; 0000_7C00|            | Boot
+        ;          =            =
+        ;          |____________|
+        ;          |////////////|
+        ;          |            |
+        ;---------------------------------------
+
+    ;**************************
+    ; reading root dir sector
+    ;**************************
+    mov	bx, 32 + 256 + 256   ; bx = directory entry head sector
+    mov	cx, (512 * 32) / 512 ; cx = sector of 512 entry count
+.10L:
+    ;**************************************
+    ; reading 1 sector(count of 16 entry)
+    ;**************************************
+    cdecl    read_lba, BOOT, bx, 1, 0x7600 ; bx = read_lba()
+    cmp      ax, 0                         ; if (0 == ax)
+    je       .10E                          ; break
+
+    ;**************************
+    ; find by directory entry
+    ;**************************
+    cdecl    fat_find_file      ; ax = find by file
+    cmp	 ax, 0              ; if (ax)
+    je       .12E
+
+    add	 ax, 32 + 256 + 256 + 32 - 2   ; adding offset to sector position
+    cdecl    read_lba, BOOT, ax, 1, 0x7800 ; read_lba
+
+    jmp      .10E
+.12E:
+    inc	bx
+    loop	.10L
+.10E:
+
+    pop	cx
+    pop	bx
+    pop	ax
 
     ret
 
 .s0:    db    'File not found.', 0
 .s1:
 
+;***********************************
+; find by directory entry(1sector)
+;***********************************
+fat_find_file:
+    push	bx
+    push	cx
+    push	si
+
+    ;**************
+    ; find file
+    ;**************
+    cld                         ; clear the DF
+    mov	bx, 0               ; bx = file head sector // initialize value
+    mov	cx, 512 / 32        ; cx = entry count
+    mov	si, 0x7600          ; si = read sector address
+.10L:
+    and	[si + 11], byte 0x18  ; check the file type
+    jnz	.12E                  ; if(directory/except volume label)
+
+    cdecl  memcmp, si, .s0, 8 + 3 ; ax = memcmp(compare the file name)
+    cmp	ax, 0                 ; if (same the file)
+    jne	.12E
+
+    mov	bx, word [si + 0x1A] ; bx = file head sector
+    jmp	.10E                 ; break
+.12E:
+    add	si,32               ; si += 32 // next entry
+    loop	.10L
+.10E:
+    mov	ax, bx              ; ret = first sector of found file
+
+    pop	si
+    pop	cx
+    pop	bx
+
+    ret
+
+.s0:    db    'SPECIAL TXT', 0
 ;************************************
 ; GLOBAL DESCRIPTOR TABLE
 ; (Array of Segment Discriptor Table)
