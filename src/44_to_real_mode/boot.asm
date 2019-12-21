@@ -106,8 +106,8 @@ BOOT:
 ; Boot Flag
 ; terminate to first 512bytes
 ;******************************
-  times 510 - ($ - $$) db 0x00
-  db 0x55, 0xAA
+times 510 - ($ - $$) db 0x00
+db 0x55, 0xAA
 
 ;******************************
 ; This Inforamation when get read mode
