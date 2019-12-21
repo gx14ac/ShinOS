@@ -524,10 +524,46 @@ TO_REAL_MODE:
     mov	ss, ax              ; ss = 0x0000
     mov	sp, 0x7C00
 
+    ;**************************************************
+    ; configure mask interrupt(designated real mode)
+    ;**************************************************
+    outp    0x20, 0x11          ; MASTER.ICW1 = 0x11
+    outp    0x21, 0x08          ; MASTER.ICW2 = 0x08
+    outp    0x21, 0x04          ; MASTER.ICW3 = 0x04
+    outp    0x21, 0x01          ; MASTER.ICW4 = 0x01
+
+    outp    0xA0, 0x11          ; SLAVE.ICW1 = 0x11
+    outp    0xA1, 0x10          ; SLAVE.ICW2 = 0x10
+    outp    0xA1, 0x02          ; SLAVE.ICW3 = 0x02
+    outp    0xA1, 0x01          ; SLAVE.ICW4 = 0x01
+
+    outp    0x21, 0b_1111_1000  ; enable interrupt process : FDD/slave PIC/KBC/Timer
+    outp    0x21, 0b_1111_1110  ; enable interrupt process : HDD/RTC
+
+    sti                         ; allow interrupt process
+
     ;********************
     ; reading file
     ;********************
     cdecl    read_file          ; read_file()
+
+    cli                         ; don't allow cli
+
+    ;***************************************************
+    ; configure mask interrupt(designated protect mode)
+    ;***************************************************
+    outp    0x20, 0x11          ; MASTER.ICW1 = 0x11
+    outp    0x21, 0x20          ; MASTER.ICW2 = 0x20
+    outp    0x21, 0x04          ; MASTER.ICW3 = 0x04
+    outp    0x21, 0x01          ; MASTER.ICW4 = 0x01
+
+    outp    0xA0, 0x11          ; SLAVE.ICW1 = 0x11
+    outp    0xA1, 0x28          ; SLAVE.ICW2 = 0x28
+    outp    0xA1, 0x02          ; SLAVE.ICW3 = 0x02
+    outp    0xA1, 0x01          ; SLAVE.ICW4 = 0x01
+
+    outp    0x21, 0b_1111_1000  ; enalbe interrupt process : slave PIC/KBC/Timer
+    outp    0xA1, 0b_1111_1110  ; enalbe interrupt process : RTC
 
     ;************************************
     ; transition 16bit protect mode
