@@ -553,6 +553,17 @@ TO_REAL_MODE:
     ; configure mask interrupt(designated protect mode)
     ;***************************************************
     outp    0x20, 0x11          ; MASTER.ICW1 = 0x11
+    outp    0x21, 0x20          ; MASTER.ICW2 = 0x20
+    outp    0x21, 0x04          ; MASTER.ICW3 = 0x04
+    outp    0x21, 0x01          ; MASTER.ICW4 = 0x01
+
+    outp    0xA0, 0x11          ; SLAVE.ICW1 = 0x11
+    outp    0xA1, 0x28          ; SLAVE.ICW2 = 0x28
+    outp    0xA1, 0x02          ; SLAVE.ICW3 = 0x02
+    outp    0xA1, 0x01          ; SLAVE.ICW4 = 0x01
+
+    outp    0x21, 0b_1111_1000  ; enalbe interrupt process : slave PIC/KBC/Timer
+    outp    0xA1, 0b_1111_1110  ; enalbe interrupt process : RTC
 
     ;************************************
     ; transition 16bit protect mode
