@@ -59,13 +59,8 @@ task_2:
 .10E:                           ; }
     cdecl draw_str, 72, 1, 0x07, .s1 ;draw_str(.s1)
 
-    mov ecx, 20                 ; ecx = 20
-.20L: mov eax, [TIMER_COUNT]
-.21L: cmp [TIMER_COUNT], eax
-    je .21L
-    loop .20L
-
-    jmp .10L
+    cdecl   wait_tick, 20
+    jmp	.10L
 
 ALIGN 4, db 0
 .c1000: dd 1000
