@@ -175,20 +175,6 @@ kernel:
     mov	[esi + 32], byte 0          ; [esi + 32] = 0
     cdecl   draw_str, 0, 0, 0x0F04, esi ; draw_str()
 .12E:
-    ;***********************
-    ; CTRL + ALT + END Key
-    ;***********************
-    mov	 al, [.int_key]      ; al = [.int_key] // keycode
-    cdecl    ctrl_alt_end        ; eax = ctrl_alt_end(key code)
-    cmp	 eax, 0              ; if (0 != eax)
-    je       .14E
-
-    mov	eax, 0               ; once do it
-    bts	[.once], eax         ; if (0 == bts(.once))
-    jc      .14E
-    cdecl    power_off           ; power_off() // shutdown
-
-.14E:
 .10E:
     jmp .10L
 
@@ -239,10 +225,6 @@ RTC_TIME:	dd	0
 %include "../modules/protect/int_nm.asm"
 %include "../modules/protect/wait_tick.asm"
 %include "../modules/protect/memcpy.asm"
-%include "../modules/protect/ctrl_and_end.asm"
-%include "../modules/protect/power_off.asm"
-%include "../modules/protect/acpi_find.asm"
-%include "../modules/protect/acpi_package_value.asm"
 
 ;****************************
 ; Padding
