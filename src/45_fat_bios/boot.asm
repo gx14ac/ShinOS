@@ -603,7 +603,7 @@ TO_REAL_MODE:
     ; transition real mode(disable paging)
     ;****************************************
     mov	eax, cr0            ; clear the PG/PE bit
-    and	eax, 0x7FFF_FFFE   ; CR0 &= ~(PG | PE) // invalid paging
+    and	eax, 0x7FF_FFFE   ; CR0 &= ~(PG | PE) // invalid paging
     mov	cr0, eax
     jmp	$ + 2               ; Flush()
 
@@ -611,7 +611,6 @@ TO_REAL_MODE:
     ; configure realmode segment
     ;*****************************
     jmp	0:.real             ; cs = 0x0000
-
 .real: mov  ax, 0x0000
     mov	ds, ax              ; ds = 0x0000
     mov	es, ax              ; es = 0x0000
@@ -631,8 +630,8 @@ TO_REAL_MODE:
     outp    0xA1, 0x02          ; SLAVE.ICW3 = 0x02
     outp    0xA1, 0x01          ; SLAVE.ICW4 = 0x01
 
-    outp    0x21, 0b_1111_1000  ; enable interrupt process : FDD/slave PIC/KBC/Timer
-    outp    0x21, 0b_1111_1110  ; enable interrupt process : HDD/RTC
+    outp    0x21, 0b_1011_1000  ; enable interrupt process : FDD/slave PIC/KBC/Timer
+    outp    0x21, 0b_1011_1110  ; enable interrupt process : HDD/RTC
 
     sti                         ; allow interrupt process
 
