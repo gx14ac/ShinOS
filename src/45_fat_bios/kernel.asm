@@ -240,6 +240,9 @@ RTC_TIME:	dd	0
 %include "../modules/protect/wait_tick.asm"
 %include "../modules/protect/memcpy.asm"
 %include "../modules/protect/ctrl_and_end.asm"
+%include "../modules/protect/power_off.asm"
+%include "../modules/protect/acpi_find.asm"
+%include "../modules/protect/acpi_package_value.asm"
 
 ;****************************
 ; Padding
