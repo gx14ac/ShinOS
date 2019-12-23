@@ -1,3 +1,4 @@
 ## Mnemonic
-- DB(data byte).
+- DB(data byte). 1byte, 8bit
 - RESB(reserve byte).
+- DW(data double word) 4byte, 32bit
