@@ -33,7 +33,6 @@ PARAM_TASK_4      equ 0x0010_8000 ; draw parameter : designated task4
 PARAM_TASK_5      equ 0x0010_9000 ; draw parameter : designated task5
 PARAM_TASK_6      equ 0x0010_A000 ; draw parameter : designated task6
 
-
 ;************************************************************************
 ;	disk image
 ;************************************************************************
