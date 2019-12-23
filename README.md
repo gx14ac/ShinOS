@@ -1,5 +1,5 @@
 ## What is this?
-- This Repository, first time making myos.
+- Hi, you.  This is first time making my OS.
 
 ## How to Build?
 - pls see Makefile :D.
