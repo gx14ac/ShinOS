@@ -1,0 +1,3 @@
+## Mnemonic
+- DB(data byte).
+- RESB(reserve byte).
