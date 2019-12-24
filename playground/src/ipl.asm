@@ -63,9 +63,19 @@ retry:
     MOV     AH, 0x02            ; acumulator high : 0x02 - read disk
     MOV     AL, 1               ; acumulator low  : sector 1
     MOV     BX, 0               ; buffer address 0x0000
+
     MOV     DL, 0x00            ; data low
     INT     0x13                ; BIOS Call
-    JC      error               ; jump if not carry
+    JNC     next                ; jump if not carry
+
+    ADD     SI, 1               ; increment SI
+    CMP     SI, 5
+    JAE     error               ; SI >= 5
+
+    MOV     AH, 0x00            ; 0x00. reset AH Register
+    MOV     DL, 0x00            ; Reset DataLow
+    INT     0x13                ; reset drive
+    JMP     retry
 
 next:
     ;; add 0x20 to ES
@@ -78,6 +88,17 @@ next:
     CMP     CL, 18
     JBE     read_loop           ; CL <= 18
 
+    ;; Back side of disc
+    MOV     CL, 1               ; reset sector
+    ADD     DH, 1               ; reverse HEAD
+    CMP     DH, 2
+    JB      read_loop
+
+    ;; next Cylinder
+    mov     DH, 0               ; reset HEAD
+    ADD     CH, 1               ; cylinder += 1
+    CMP     CH, CYLS
+    JB      read_loop
 fin:
     HLT
     JMP     fin
@@ -90,6 +111,7 @@ putloop:
     ADD     SI, 1
     CMP     AL, 0
     JE      fin
+
     MOV     AH, 0x0e
     MOV     BX, 15
     INT     0x10                ; interrupt BIOS
