@@ -7,8 +7,9 @@
     ;; don't access address
     ;;******************************************************
 
-    ;; Initial Program Load Addr
-    ORG     0x7c00
+    CYLS    EQU     10          ; Max read value(Cylinders)
+
+            ORG     0x7c00      ; Initial Program Load Address
 
     ;; FAT 12 Format Floppy Disk
     JMP     entry
@@ -79,7 +80,8 @@ retry:
 
 next:
     ;; add 0x20 to ES
-    MOV     AX, ES              ; 0x20
+    ;; 0x0820 + (0x0020 * 18)
+    MOV     AX, ES
     ADD     AX, 0x0020
     MOV     ES, AX
 
