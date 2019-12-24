@@ -101,9 +101,9 @@ next:
     ADD     CH, 1               ; cylinder += 1
     CMP     CH, CYLS
     JB      read_loop
-fin:
-    HLT
-    JMP     fin
+
+    MOV     [0x0ff0], CH
+    JMP     0xc200
 
 error:
     MOV     SI, msg
@@ -118,6 +118,10 @@ putloop:
     MOV     BX, 15
     INT     0x10                ; interrupt BIOS
     JMP     putloop
+
+fin:
+    HLT
+    JMP     fin
 
 msg:
     DB      0x0a, 0x0a
