@@ -40,28 +40,43 @@
 
 ;; Reset Register Value
 entry:
-    MOV     AX, 0
-    MOV     SS, AX
-    MOV     SP, 0x7c00
-    MOV     DS, AX
+    MOV     AX, 0               ; initialize acumulator
+    MOV     SS, AX              ; stack segment
+    MOV     SP, 0x7c00          ; stack pointer
+    MOV     DS, AX              ; data segment
 
     ;; load disk
     MOV     AX, 0x0820
-    MOV     ES, AX
-    MOV     CH, 0
-    MOV     DH, 0
-    MOV     CL, 2
+    MOV     ES, AX              ; extra segment : buffer address 0x820
+    MOV     CH, 0               ; counter high  : cylinder 0
+    MOV     DH, 0               ; data high     : head 0
+    MOV     CL, 2               ; counter low   : sector 2
 
+read_loop:
+    MOV     SI, 0               ; calc retry count
+
+retry:
     ;;*********************************************
     ;; **0x13(BIOS System Call)
     ;; - http://stanislavs.org/helppc/int_13.html
     ;;**********************************************
-    MOV     AH, 0x02
-    MOV     AL, 1
-    MOV     BX, 0
-    MOV     DL, 0x00
-    INT     0x13
-    JC      error
+    MOV     AH, 0x02            ; acumulator high : 0x02 - read disk
+    MOV     AL, 1               ; acumulator low  : sector 1
+    MOV     BX, 0               ; buffer address 0x0000
+    MOV     DL, 0x00            ; data low
+    INT     0x13                ; BIOS Call
+    JC      error               ; jump if not carry
+
+next:
+    ;; add 0x20 to ES
+    MOV     AX, ES              ; 0x20
+    ADD     AX, 0x0020
+    MOV     ES, AX
+
+    ;; increment CL(sector number)
+    ADD     CL, 1
+    CMP     CL, 18
+    JBE     read_loop           ; CL <= 18
 
 fin:
     HLT
@@ -82,7 +97,7 @@ putloop:
 
 msg:
     DB      0x0a, 0x0a
-    DB      "Hi My Firends"
+    DB      "LOAD ERROR"
     DB      0x0a
     DB      0
 
