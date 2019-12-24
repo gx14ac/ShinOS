@@ -3,7 +3,7 @@ IMGNAME := ChooseYourSelf
 
 run :
 	nasm src/ipl.asm -o ipl.img -l ipl.lst
-	qemu-system-i386 ipl.img
+	qemu-system-i386 -fda ipl.img
 
 clean:
 	rm -rf *.lst
