@@ -35,7 +35,7 @@
     DB      0x29                ; BS_BootSig
 
     DD      0xffffffff          ; Volume Serial Number
-    DB      "Shin-OS   "        ; DiskName
+    DB      "ShinOS   "         ; DiskName
     DB      "FAT12   "          ; Format Name
     RESB    18                  ; For now, leave open 18byte
 
@@ -81,6 +81,7 @@ retry:
 next:
     ;; add 0x20 to ES
     ;; 0x0820 + (0x0020 * 18)
+    ;; Read th 0x08200 ~ 0x34fff data
     MOV     AX, ES
     ADD     AX, 0x0020
     MOV     ES, AX
@@ -103,7 +104,7 @@ next:
     JB      read_loop
 
     MOV     [0x0ff0], CH
-    JMP     0xc200
+    JMP     0xc200              ; jump to asmhead
 
 error:
     MOV     SI, msg
