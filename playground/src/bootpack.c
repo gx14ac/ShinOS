@@ -1,4 +1,4 @@
-void ShinMain(void)
+void HariMain(void)
 {
 fin:
     goto fin;
