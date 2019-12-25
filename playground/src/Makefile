@@ -7,8 +7,11 @@ ipl.bin : ipl.asm Makefile
 asmhead.bin : asmhead.asm Makefile
 	nasm asmhead.asm -o asmhead.bin -l asmhead.lst
 
-bootpack.hrb : bootpack.c shin.ld Makefile
-	gcc -fno-pie -march=i486 -m32 -nostdlib -T shin.ld bootpack.c -o bootpack.hrb
+nasmfunc.o : nasmfunc.asm Makefile
+	nasm -g -f elf nasmfunc.asm -o nasmfunc.o
+
+bootpack.hrb : bootpack.c shin.ld nasmfunc.o Makefile
+	gcc -fno-pie -march=i486 -m32 -nostdlib -T shin.ld bootpack.c nasmfunc.o -o bootpack.hrb
 
 shinos.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > shinos.sys
