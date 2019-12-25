@@ -1,3 +1,7 @@
+BOTPAK  EQU     0x00280000      ; BOOTPACK     | Bootpack loading destination
+DSKCAC  EQU     0x00100000      ; DISK CACHE   | Disk Cache Place
+DSKCAC0 EQU     0x00008000      ; DISK CAHCE 0 | Disk Cahce Place(real mode)
+
 ;; Boot Information
 CYLS    EQU     0x0ff0      ; Config Boot Sector
 LEDS    EQU     0x0ff1      ; LED State
@@ -127,9 +131,15 @@ memcpy:
     ALIGNB 16
 
 GDT0:
-    DW      8*3-1
-    DD      GDT0
+    RESB    8                           ; Null Selector
+    DW      0xffff,0x0000,0x9200,0x00cf ; Reeadable / Writable segment 32bit
+    DW      0xffff,0x0000,0x9a28,0x0047 ; Executable segment 32bit（original bootpack）
 
-    ALIGNB  16
+    DW      0
 
+GDTR0:
+    DW  8*3-1
+    DD  GDT0
+
+    ALIGNB 16
 bootpack:
