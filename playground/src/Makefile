@@ -39,4 +39,5 @@ clean :
 		*.bin \
 		*.sys \
 		*.img \
-		*.hrb
+		*.hrb \
+		*.o
