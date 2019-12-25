@@ -1,4 +1,10 @@
 ## Mnemonic
-- DB(data byte). 1byte, 8bit
+- DB(data byte). 8bit, 1byte
 - RESB(reserve byte).
 - DW(data double word) 4byte, 32bit
+
+- BYTE, 8bit, 1byte
+- WORD, 16bit, 2byte
+
+- [DB..etc], memory information, but this mnemonic can used only BX, BP, SI, DI Register
+- JE jump when equal
