@@ -46,7 +46,7 @@ struct BootInfo {
 void HariMain(void)
 {
     struct BootInfo *binfo = (struct BootInfo *) 0x0ff0;
-//    extern char hankaku[4096];
+    extern char hankaku[4096];
     char s[40];
 
     init_palette();

@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -fno-pie -m32 -march=i486 -nostdlib
+CFLAGS = -c -m32 -march=i486 -nostdlib
 
 default:
 	make run
@@ -20,13 +20,13 @@ nasmfunc.o : nasmfunc.asm Makefile
 	nasm -f elf nasmfunc.asm -o nasmfunc.o -l nasmfunc.lst
 
 hankaku.o : hankaku.c
-	$(CC) $(CFLAGS) hankaku.c -o hankaku.o
+	$(CC) -fno-pie $(CFLAGS) hankaku.c -o hankaku.o
 
 mysprintf.o : mysprintf.c
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) -fno-pie $(CFLAGS) -nostdlib $^ -o $@
 
 bootpack.hrb : bootpack.c hankaku.o nasmfunc.o mysprintf.o shin.ld
-	$(CC) $(CFLAGS) -T shin.ld bootpack.c hankaku.o nasmfunc.o mysprintf.o -o bootpack.hrb
+	$(CC) -fno-pie -m32 -march=i486 -nostdlib -nostdinc -T shin.ld bootpack.c hankaku.o nasmfunc.o mysprintf.o -o bootpack.hrb
 
 shinos.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > shinos.sys
