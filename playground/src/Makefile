@@ -58,6 +58,6 @@ clean :
 	rm hankaku.c
 	rm convHankakuTxt
 
-src_only :
+hyper_clean :
 	make clean
 	rm shinos.img
