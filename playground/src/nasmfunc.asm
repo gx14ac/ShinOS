@@ -40,19 +40,19 @@ io_in32:
     RET
 
 io_out8:
-    MOV     EDX, [EBP + 4]      ; port
+    MOV     EDX, [ESP + 4]      ; port
     MOV     AL,  [ESP + 8]      ; data
     OUT     DX, AL              ; Input character data from output device(PORT). 8bit
     RET
 
 io_out16:
-    MOV     EDX, [EBP + 4]      ; port
+    MOV     EDX, [ESP + 4]      ; port
     MOV     EAX,  [ESP + 8]     ; data
     OUT     DX, AX              ; Input character data from output device(PORT). 16bit
     RET
 
 io_out32:
-    MOV     EDX, [EBP + 4]      ; port
+    MOV     EDX, [ESP + 4]      ; port
     MOV     EAX,  [ESP + 8]     ; data
     OUT     DX, EAX             ; Input character data from output device(PORT). 32bit
     RET
@@ -63,7 +63,7 @@ io_load_eflags:                 ; int io_load_eflags(void);
     RET
 
 io_store_eflags:
-    MOV     EAX, [EBP + 4]
+    MOV     EAX, [ESP + 4]
     PUSH    EAX                 ; eax = eflags
     POPFD                       ; elflags = eax
     RET
