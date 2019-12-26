@@ -44,11 +44,9 @@ struct BootInfo {
 void HariMain(void)
 {
     struct BootInfo *binfo = (struct BootInfo *) 0x0ff0;
-    extern char hankaku[4096];
 
     init_palette();
     init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
-
     putfonts8_asc(binfo->vram, binfo->scrnx,  8,  8, COL8_FFFFFF, "ABC 123");
     putfonts8_asc(binfo->vram, binfo->scrnx, 31, 31, COL8_000000, "Haribote OS");   // ‰e
     putfonts8_asc(binfo->vram, binfo->scrnx, 30, 30, COL8_FFFFFF, "Haribote OS");   // ”’‚¢•¶Žš
@@ -97,6 +95,7 @@ void set_palette(int start, int end, unsigned char *rgb)
         rgb += 3;
     }
     io_store_eflags(eflags); // undo interrupt flag
+
     return;
 }
 
@@ -113,6 +112,7 @@ void boxfill_8(unsigned char *vram,
             vram[y * xsize + x] = c;
         }
     }
+
     return;
 }
 
@@ -134,6 +134,7 @@ void init_screen(char *vram, int x, int y)
     boxfill_8(vram, x, COL8_848484, x - 47, y - 23, x - 47, y -  4);
     boxfill_8(vram, x, COL8_FFFFFF, x - 47, y -  3, x -  4, y -  3);
     boxfill_8(vram, x, COL8_FFFFFF, x -  3, y - 24, x -  3, y -  3);
+
     return;
 }
 
