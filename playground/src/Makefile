@@ -1,23 +1,32 @@
-default :
+CC = gcc
+CFLAGS = -fno-pie -m32 -march=i486 -nostdlib
+
+default:
 	make run
 
 convHankakuTxt : convHankakuTxt.c
-		$(CC) $< -o $@
+	$(CC) $< -o $@
 
 hankaku.c : hankaku.txt convHankakuTxt
-		./convHankakuTxt
+	./convHankakuTxt
 
 ipl.bin : ipl.asm Makefile
 	nasm ipl.asm -o ipl.bin -l ipl.lst
 
-asmhead.bin : asmhead.asm Makefile
+asmhead.bin : asmhead.asm
 	nasm asmhead.asm -o asmhead.bin -l asmhead.lst
 
 nasmfunc.o : nasmfunc.asm Makefile
-	nasm -g -f elf nasmfunc.asm -o nasmfunc.o
+	nasm -f elf nasmfunc.asm -o nasmfunc.o -l nasmfunc.lst
 
-bootpack.hrb : bootpack.c shin.ld hankaku.c nasmfunc.o Makefile
-	gcc -fno-pie -march=i486 -m32 -nostdlib -T shin.ld bootpack.c hankaku.c nasmfunc.o -o bootpack.hrb
+hankaku.o : hankaku.c
+	$(CC) $(CFLAGS) hankaku.c -o hankaku.o
+
+mysprintf.o : mysprintf.c
+	$(CC) $(CFLAGS) $^ -o $@
+
+bootpack.hrb : bootpack.c hankaku.o nasmfunc.o mysprintf.o shin.ld
+	$(CC) $(CFLAGS) -T shin.ld bootpack.c hankaku.o nasmfunc.o mysprintf.o -o bootpack.hrb
 
 shinos.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > shinos.sys
@@ -34,22 +43,21 @@ img :
 
 run :
 	make img
-	qemu-system-i386 -fda shinos.img
+	qemu-system-i386 -fda shinos.img	# "-fda" for floppy disk
 
-debug :
+debug:
 	make img
 	qemu-system-i386 -fda shinos.img -gdb tcp::10000 -S
 
 clean :
-	rm -rf *.lst \
-		*.bin \
-		*.sys \
-		*.img \
-		*.hrb \
-		*.o \
-		hankaku.c \
-		convHankakuTxt
+	rm *.lst
+	rm *.o
+	rm *.bin
+	rm *.hrb
+	rm *.sys
+	rm hankaku.c
+	rm convHankakuTxt
 
-src_only:
+src_only :
 	make clean
-	rm	 shinos.img
+	rm shinos.img

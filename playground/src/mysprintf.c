@@ -23,7 +23,7 @@ int transfer_decimal_2_asc (char *str, int dec)
 // Transfer Hex to ASCII
 int transfer_hex_2_asc(char *str, int dec)
 {
-    int len = 0; len_buf;
+    int len = 0, len_buf;
     int buf[10];
     while (1) {
         buf[len++] = dec % 16;
