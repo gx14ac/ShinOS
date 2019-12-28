@@ -4,29 +4,34 @@ CFLAGS = -c -m32 -march=i486 -nostdlib
 default:
 	make run
 
-convHankakuTxt : convHankakuTxt.c
-	$(CC) $< -o $@
-
-hankaku.c : hankaku.txt convHankakuTxt
-	./convHankakuTxt
-
 ipl.bin : ipl.asm Makefile
 	nasm ipl.asm -o ipl.bin -l ipl.lst
 
 asmhead.bin : asmhead.asm
 	nasm asmhead.asm -o asmhead.bin -l asmhead.lst
 
+bootpack.o : bootpack.c
+	$(CC) -fno-pie $(CFLAGS) $< -o $@
+
 nasmfunc.o : nasmfunc.asm Makefile
 	nasm -f elf nasmfunc.asm -o nasmfunc.o -l nasmfunc.lst
 
 hankaku.o : hankaku.c
-	$(CC) -fno-pie $(CFLAGS) hankaku.c -o hankaku.o
+	$(CC) -fno-pie $(CFLAGS) $< -o $@
 
 mysprintf.o : mysprintf.c
 	$(CC) -fno-pie $(CFLAGS) -nostdlib $^ -o $@
 
-bootpack.hrb : bootpack.c hankaku.o nasmfunc.o mysprintf.o shin.ld
-	$(CC) -fno-pie -m32 -march=i486 -nostdlib -nostdinc -T shin.ld bootpack.c hankaku.o nasmfunc.o mysprintf.o -o bootpack.hrb
+graphic.o : graphic.c
+	$(CC) -fno-pie $(CFLAGS) $< -o $@
+
+dsctbl.o : dsctbl.c
+	$(CC) -fno-pie $(CFLAGS) $< -o $@
+
+BOOTPACK_OBJ = bootpack.o nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o
+
+bootpack.hrb : $(BOOTPACK_OBJ) shin.ld
+	ld -m elf_i386 -T shin.ld $(BOOTPACK_OBJ) -o $@
 
 shinos.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > shinos.sys
