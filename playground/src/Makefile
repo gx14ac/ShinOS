@@ -60,9 +60,7 @@ clean :
 	rm *.bin
 	rm *.hrb
 	rm *.sys
-	rm hankaku.c
-	rm convHankakuTxt
 
 hyper_clean :
-	make clean
 	rm shinos.img
+	make clean
