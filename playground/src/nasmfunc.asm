@@ -3,6 +3,7 @@ section .text
     GLOBAL  io_in8, io_in16, in_in32
     GLOBAL  io_out8, io_out16, io_out32
     GLOBAL  io_load_eflags, io_store_eflags
+    GLOBAL  load_gdtr, load_idtr
 
 io_hlt:
     HLT
@@ -66,4 +67,16 @@ io_store_eflags:
     MOV     EAX, [ESP + 4]
     PUSH    EAX                 ; eax = eflags
     POPFD                       ; elflags = eax
+    RET
+
+load_gdtr:
+    MOV     AX, [ESP + 4]
+    MOV     [ESP + 6], AX
+    LGDT    [ESP + 6]
+    RET
+
+load_idtr:
+    MOV     AX, [ESP + 4]
+    MOV     [ESP + 6], AX
+    LIDT    [ESP + 6]
     RET
