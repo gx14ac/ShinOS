@@ -1,33 +1,19 @@
-extern void io_hlt(void);
-extern void io_cli(void);
-extern void io_out8(int port, int data);
-extern int  io_load_eflags(void);
-extern void io_store_eflags(int eflags);
+void io_hlt(void);
+void io_cli(void);
+void io_out8(int port, int data);
+int  io_load_eflags(void);
+void io_store_eflags(int eflags);
 
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
-void boxfill_8(unsigned char *vram,
-              int xsize,
-              unsigned char c,
-              int x0,
-              int y0,
-              int x1,
-              int y1);
+void boxfill_8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
 
 void init_screen(char *vram, int x, int y);
 void put_font8(char *vram, int xsize, int x, int y, char c, char *font);
 void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s);
-void init_mouse_cursor8(char *mouse, char background_color);
-void putblock8_8(char *vram,
-                 int vxsize,
-                 int pxsize,
-                 int pysize,
-                 int px0,
-                 int py0,
-                 char *buf,
-                 int bxsize);
-
 extern void sprintf(char *str, char *fmt, ...);
+void init_mouse_cursor8(char *mouse, char background_color);
+void putblock8_8(char *vram, int vxsize, int pxsize, int pysize, int px0, int py0, char *buf, int bxsize);
 
 #define COL8_000000     0
 #define COL8_FF0000     1
@@ -77,6 +63,7 @@ void HariMain(void)
     char s[40], mcursor[256];
     int mx, my;
 
+    init_gdtidt();
     init_palette();
     init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
     putfonts8_asc(binfo->vram, binfo->scrnx,  8,  8, COL8_FFFFFF, "ABC 123");
@@ -287,11 +274,13 @@ void init_gdtidt(void)
     for (int i = 0; i < 8192; i++) {
         set_segmdesc(gdt + i, 0, 0, 0);
     }
+    // CPU All Segment(4GB)
     set_segmdesc(gdt + 1, 0xffffffff, 0x00000000, 0x4092);
-    set_segmdesc(gdt + 2, 0x0007ffff, 0x409a);
+    // for the bootpack.hrb
+    set_segmdesc(gdt + 2, 0x0007ffff, 0x00280000, 0x409a);
     load_gdtr(0xffff, 0x00270000);
 
-    for (int i = 0; i < 256; i++ ) {
+    for (int i = 0; i < 256; i++) {
         set_gatedesc(idt + i, 0, 0, 0);
     }
     load_idtr(0x7ff, 0x0026f800);
@@ -306,13 +295,13 @@ void set_segmdesc(struct SegmentDescriptor *sd,
     )
 {
     if (limit > 0xffff) {
-        ar |= 0x8000; // G_bit = 1
+        ar |= 0x8000; // OR
         limit /= 0x1000;
     }
 
     sd->limit_low = limit & 0xffff;
     sd->base_low = base & 0xffff;
-    sd->base_mid = (base >> 16) & 0xff;
+    sd->base_mid = (base >> 16) & 0xff; // right shiift
     sd->access_right = ar & 0xff;
     sd->limit_high = ((limit >> 16) & 0x0f) | ((ar >> 8) & 0xf0);
     sd->base_high = ((base >> 24)) & 0xff;
