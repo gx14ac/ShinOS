@@ -1,26 +1,6 @@
-struct BootInfo {
-    char cyls, leds, vmode, reserve;  // 1 byte
-    short scrnx, scrny;               // 2 byte
-    char *vram;                       // 4 byte
-};
+// dsctbl.c
 
-struct SegmentDescriptor { // 8byte
-    short limit_low, base_low; // 4byte
-    char base_mid, access_right; // 2byte
-    char limit_high, base_high; // 2byte
-};
-
-struct GateDescriptor { // 10byte
-    short offset_low, selector; // 4byte
-    char dw_count, access_right; // 2byte
-    short offset_high; // 4byte
-};
-
-void init_gdtidt(void);
-void set_segmdesc(struct SegmentDescriptor *sd, unsigned int limit, int base, int ar);
-void set_gatedesc(struct GateDescriptor *gd, int offset, int selector, int ar);
-void load_gdtr(int limit, int addr);
-void load_idtr(int limit, int addr);
+#include "bootpack.h"
 
 /*
   - initialize global & interrupt descriptor table
