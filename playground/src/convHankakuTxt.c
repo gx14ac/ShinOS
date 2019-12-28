@@ -46,6 +46,4 @@ int main() {
   fwrite(s2, sizeof(char), strlen(s2), outfp);
   fclose(infp);
   fclose(outfp);
-
-  return 0;
 }
