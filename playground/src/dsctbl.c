@@ -17,15 +17,20 @@ void init_gdtidt(void)
         set_segmdesc(gdt + i, 0, 0, 0);
     }
     // CPU All Segment(4GB)
-    set_segmdesc(gdt + 1, 0xffffffff, 0x00000000, 0x4092);
+    set_segmdesc(gdt + 1, 0xffffffff, 0x00000000, AR_DATA32_RW);
     // for the bootpack.hrb
-    set_segmdesc(gdt + 2, 0x0007ffff, 0x00280000, 0x409a);
-    load_gdtr(0xffff, 0x00270000);
+    set_segmdesc(gdt + 2, LIMIT_BOTPAK, ADR_BOTPAK, AR_CODE32_ER);
+    load_gdtr(LIMIT_GDT, ADR_GDT);
 
+    // initialize IDT
     for (int i = 0; i < 256; i++) {
         set_gatedesc(idt + i, 0, 0, 0);
     }
     load_idtr(0x7ff, 0x0026f800);
+
+    /* configure IDT */
+    set_gatedesc(idt + 0x21, (int)asm_inthandler21, 2 * 8, AR_INTGATE32);
+    set_gatedesc(idt + 0x2c, (int)asm_inthandler2c, 2 * 8, AR_INTGATE32);
 
     return;
 }
