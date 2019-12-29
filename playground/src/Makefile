@@ -28,7 +28,10 @@ graphic.o : graphic.c
 dsctbl.o : dsctbl.c
 	$(CC) -fno-pie $(CFLAGS) $< -o $@
 
-BOOTPACK_OBJ = bootpack.o nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o
+int.o : int.c
+	$(CC) -fno-pie $(CFLAGS) $< -o $@
+
+BOOTPACK_OBJ = bootpack.o nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o int.o
 
 bootpack.hrb : $(BOOTPACK_OBJ) shin.ld
 	ld -m elf_i386 -T shin.ld $(BOOTPACK_OBJ) -o $@
