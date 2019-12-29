@@ -2,9 +2,6 @@
   bootpack.h
 */
 
-/* stdio */
-void sprintf(char *str, char *fmt, ...);
-
 /* asmhead.asm */
 struct BootInfo {
     char cyls, leds, vmode, reserve;  // 1 byte
@@ -22,9 +19,10 @@ int  io_load_eflags(void);
 void io_store_eflags(int eflags);
 void load_gdtr(int limit, int addr);
 void load_idtr(int limit, int addr);
+void asm_inthandler21(void);
+void asm_inthandler2c(void);
 
 /* graphic.c  */
-
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
 void boxfill_8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
@@ -77,3 +75,22 @@ void init_gdtidt(void);
 #define LIMIT_BOTPAK  0x0007ffff  // 4 byte
 #define AR_DATA32_RW  0x4092      // 2 byte
 #define AR_CODE32_ER  0x409a      // 2 byte
+#define AR_INTGATE32 0x008e       // 2 byte
+
+// int.c
+// PIC distinguishes even if the port number is the same
+void init_pic(void);
+void int_handler21(int *esp);
+void int_handler2c(int *esp);
+#define PIC0_ICW1 0x0020
+#define PIC0_OCW2 0x0020
+#define PIC0_IMR  0x0021
+#define PIC0_ICW2 0x0021
+#define PIC0_ICW3 0x0021
+#define PIC0_ICW4 0x0021
+#define PIC1_ICW1 0x00a0
+#define PIC1_OCW2 0x00a0
+#define PIC1_IMR  0x00a1
+#define PIC1_ICW2 0x00a1
+#define PIC1_ICW3 0x00a1
+#define PIC1_ICW4 0x00a1
