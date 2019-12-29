@@ -20,7 +20,9 @@ void init_pic(void)
     io_out8(PIC1_ICW4, 0x01); // fixed : nonbuffer mode
 
     io_out8(PIC0_IMR, 0xfb); // 11111011 All except PIC1 are prohibited
-    io_out8(PIC0_IMR, 0xff); // 11111111 Not accepting all interrupts
+    io_out8(PIC1_IMR, 0xff); // 11111111 Not accepting all interrupts
+
+    return;
 }
 
 /*
