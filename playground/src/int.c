@@ -51,3 +51,12 @@ void int_handler2c(int *esp)
         io_hlt();
     }
 }
+
+/*
+  - Measures against incomplete interrupt from PIC0
+ */
+void int_handler27(int *esp)
+{
+    io_out8(PIC0_OCW2, 0x67);
+    return;
+}
