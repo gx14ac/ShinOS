@@ -21,6 +21,7 @@ void load_gdtr(int limit, int addr);
 void load_idtr(int limit, int addr);
 void asm_inthandler21(void);
 void asm_inthandler2c(void);
+void asm_inthandler27(void);
 
 /* graphic.c  */
 void init_palette(void);
