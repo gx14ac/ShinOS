@@ -5,7 +5,7 @@ section .text
     GLOBAL  io_load_eflags, io_store_eflags
     GLOBAL  load_gdtr, load_idtr
     GLOBAL  asm_inthandler21, asm_inthandler2c, asm_inthandler27
-    EXTERN  int_handler21, int_handler2c
+    EXTERN  int_handler21, int_handler2c, int_handler27
 
 io_hlt:
     HLT
