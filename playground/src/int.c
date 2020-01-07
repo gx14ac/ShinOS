@@ -31,13 +31,16 @@ void init_pic(void)
 void int_handler21(int *esp)
 {
     struct BootInfo *binfo = (struct BootInfo *) BOOTINFO_ADDR;
-    boxfill_8(binfo->vram, binfo->scrnx, COL8_000000, 0, 0, 32 * 8 - 1, 15);
-    putfonts8_asc(binfo->vram, binfo->scrnx, 0, 0, COL8_FFFFFF, "INT 21(IRQ-1) : PS/2 keyboard");
-    for (;;) {
-        io_hlt();
-    }
-}
+    unsigned char data, s[f4];
+    io_out8(PIC0_OCW2, 0x61); // Notify PIC that IRQ-01 has been accepted
+    data = io_in8(PORT_KEYDAT);
 
+    sprintf(s, "%02x", data);
+    boxfill8(binfo->vram, binfo->scrnx, COL8_008484, 0, 16, 15, 31);
+    putfonts8_asc(binfo->vram, binfo->scrnx, 0, 16, COL8_FFFFFF, s);
+
+    return;
+}
 
 /*
   - interrupt mouse
