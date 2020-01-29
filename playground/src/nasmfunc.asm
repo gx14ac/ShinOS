@@ -1,12 +1,13 @@
-section .text
+[BITS 32]
     GLOBAL  io_hlt, io_cli, io_sti, io_stihlt
-    GLOBAL  io_in8, io_in16, in_in32
+    GLOBAL  io_in8, io_in16, io_in32
     GLOBAL  io_out8, io_out16, io_out32
     GLOBAL  io_load_eflags, io_store_eflags
     GLOBAL  load_gdtr, load_idtr
     GLOBAL  asm_inthandler21, asm_inthandler2c, asm_inthandler27
-    EXTERN  int_handler21, int_handler2c, int_handler27
+    EXTERN  inthandler21, inthandler2c, inthandler27
 
+[SECTION .text]
 io_hlt:
     HLT
     RET
@@ -92,7 +93,7 @@ asm_inthandler21:
     MOV     AX, SS
     MOV     DS, AX
     MOV     ES, AX
-    CALL    int_handler21
+    CALL    inthandler21
     POP     EAX
     POPAD
     POP     DS
@@ -108,7 +109,7 @@ asm_inthandler27:
     MOV     AX, SS
     MOV     DS, AX
     MOV     ES, AX
-    CALL    int_handler27
+    CALL    inthandler27
     POP     EAX
     POPAD
     POP     DS
@@ -124,7 +125,7 @@ asm_inthandler2c:
     MOV     AX, SS
     MOV     DS, AX
     MOV     ES, AX
-    CALL    int_handler2c
+    CALL    inthandler2c
     POP     EAX
     POPAD
     POP     DS

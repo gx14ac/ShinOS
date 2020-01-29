@@ -8,7 +8,6 @@ SECTIONS
          LONG(0)                /* 8  : mmarea size */
          LONG(0x310000)         /* 12 : stack initialize value & destination data */
          LONG(SIZEOF(.data))    /* 16 : data size */
-         LONG(LOADADDR(.data))  /* 20 : data initialize position */
          LONG(0xE9000000)       /* 0xE9000000 */
          LONG(HariMain - 0x20)  /* entry address - 0x20 */
          LONG(0)                /* heap size. start addr */

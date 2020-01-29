@@ -28,16 +28,14 @@ void init_pic(void)
 /*
   - interrupt Keyboard
  */
-void int_handler21(int *esp)
+void inthandler21(int *esp)
 {
-    struct BootInfo *binfo = (struct BootInfo *) BOOTINFO_ADDR;
-    unsigned char data, s[4];
-    io_out8(PIC0_OCW2, 0x61); // Notify PIC that IRQ-01 has been accepted
-    data = io_in8(PORT_KEYDAT);
-
-    sprintf(s, "%02x", data);
-    boxfill_8(binfo->vram, binfo->scrnx, COL8_008484, 0, 16, 15, 31);
-    putfonts8_asc(binfo->vram, binfo->scrnx, 0, 16, COL8_FFFFFF, s);
+	struct BootInfo *binfo = (struct BOOTINFO *) ADR_BOOTINFO;
+	boxfill8(binfo->vram, binfo->scrnx, COL8_000000, 0, 0, 32 * 8 - 1, 15);
+	putfonts8_asc(binfo->vram, binfo->scrnx, 0, 0, COL8_FFFFFF, "INT 21 (IRQ-1) : PS/2 keyboard");
+	for (;;) {
+		io_hlt();
+	}
 
     return;
 }
@@ -45,10 +43,10 @@ void int_handler21(int *esp)
 /*
   - interrupt mouse
  */
-void int_handler2c(int *esp)
+void inthandler2c(int *esp)
 {
-    struct BootInfo *binfo = (struct BootInfo *) BOOTINFO_ADDR;
-    boxfill_8(binfo->vram, binfo->scrnx, COL8_000000, 0, 0, 32 * 8 - 1, 15);
+    struct BootInfo *binfo = (struct BootInfo *) ADR_BOOTINFO;
+    boxfill8(binfo->vram, binfo->scrnx, COL8_000000, 0, 0, 32 * 8 - 1, 15);
     putfonts8_asc(binfo->vram, binfo->scrnx, 0, 0, COL8_FFFFFF, "INT 2C (IRQ-12) : PS/2 mouse");
     for (;;) {
         io_hlt();
@@ -58,7 +56,7 @@ void int_handler2c(int *esp)
 /*
   - Measures against incomplete interrupt from PIC0
  */
-void int_handler27(int *esp)
+void inthandler27(int *esp)
 {
     io_out8(PIC0_OCW2, 0x67);
     return;
