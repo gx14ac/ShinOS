@@ -91,12 +91,16 @@ pipelineflush:
     ; Boot Sector
     MOV     ESI, 0x7c00         ; Backwarding Destination
     MOV     EDI, DSKCAC         ; Fowarding Destination
-    MOV     ECX, 0
-    MOV     CL, BYTE[CYLS]
-    IMUL    ECX, 512*18*2/4
     SUB     ECX, 512/4
     CALL    memcpy
 
+	MOV		ESI,DSKCAC0+512
+    MOV		EDI,DSKCAC+512
+	MOV		ECX,0
+	MOV		CL,BYTE [CYLS]
+	IMUL	ECX,512*18*2/4
+	SUB		ECX,512/4
+	CALL	memcpy
 
     ; Launching BootPack
     MOV     EBX, BOTPAK
@@ -128,10 +132,10 @@ memcpy:
     JNZ     memcpy
     RET
 
-    ALIGNB 16
+    ALIGNB 16, DB 0
 
 GDT0:
-    RESB    8                           ; Null Selector
+    TIMES   8 DB 0                      ; Null Selector
     DW      0xffff,0x0000,0x9200,0x00cf ; Reeadable / Writable segment 32bit
     DW      0xffff,0x0000,0x9a28,0x0047 ; Executable segment 32bit（original bootpack）
 
@@ -141,5 +145,5 @@ GDTR0:
     DW  8*3-1
     DD  GDT0
 
-    ALIGNB 16
+    ALIGNB 16, DB 0
 bootpack:
