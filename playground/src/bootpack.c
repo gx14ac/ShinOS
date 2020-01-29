@@ -2,8 +2,7 @@
 
 void HariMain(void)
 {
-    struct BootInfo *binfo = (struct BootInfo *) 0x0ff0;
-    extern char hankaku[4096];
+    struct BootInfo *binfo = (struct BootInfo *) ADR_BOOTINFO;
     char s[40], mcursor[256];
     int mx, my;
 
