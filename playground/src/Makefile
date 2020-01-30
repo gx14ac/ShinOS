@@ -1,69 +1,87 @@
-CC = gcc
-CFLAGS = -c -m32 -march=i486 -nostdlib
+OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj \
+		int.obj
 
-default:
-	make run
+TOOLPATH = z_tools/
+INCPATH  = z_tools/haribote/
 
-ipl.bin : ipl.asm Makefile
-	nasm ipl.asm -o ipl.bin -l ipl.lst
+NASK = $(TOOLPATH)nask.exe
+CC1  = $(TOOLPATH)cc1.exe -I$(INCPATH) -Os -Wall -quiet
+GAS2NASK = $(TOOLPATH)gas2nask.exe -a
+RULEFILE = $(TOOLPATH)haribote/haribote.rul
+OBJ2BIM  = $(TOOLPATH)obj2bim.exe
+BIM2HRB  = $(TOOLPATH)bim2hrb.exe
+BIN2OBJ  = $(TOOLPATH)bin2obj.exe
+MAKEFONT = $(TOOLPATH)makefont.exe
 
-asmhead.bin : asmhead.asm
-	nasm asmhead.asm -o asmhead.bin -l asmhead.lst
+# デフォルト動作
+default :
+	$(MAKE) img
 
-bootpack.o : bootpack.c
-	$(CC) -fno-pie $(CFLAGS) $< -o $@
+# ファイル生成規則
+ipl10.bin : ipl10.nas Makefile
+	$(NASK) ipl10.nas ipl10.bin ipl10.lst
 
-nasmfunc.o : nasmfunc.asm Makefile
-	nasm -f elf nasmfunc.asm -o nasmfunc.o -l nasmfunc.lst
+asmhead.bin : asmhead.nas Makefile
+	$(NASK) asmhead.nas asmhead.bin asmhead.lst
 
-hankaku.o : hankaku.c
-	$(CC) -fno-pie $(CFLAGS) $< -o $@
+hankaku.bin : hankaku.txt Makefile
+	$(MAKEFONT) hankaku.txt hankaku.bin
 
-mysprintf.o : mysprintf.c
-	$(CC) -fno-pie $(CFLAGS) -nostdlib $^ -o $@
+hankaku.obj : hankaku.bin Makefile
+	$(BIN2OBJ) hankaku.bin hankaku.obj _hankaku
 
-graphic.o : graphic.c
-	$(CC) -fno-pie $(CFLAGS) $< -o $@
+bootpack.bim : $(OBJS_BOOTPACK) Makefile
+	$(OBJ2BIM) @$(RULEFILE) out:bootpack.bim stack:3136k map:bootpack.map \
+		$(OBJS_BOOTPACK)
+	# 3Mb + 64Kb = 3136Kb
 
-dsctbl.o : dsctbl.c
-	$(CC) -fno-pie $(CFLAGS) $< -o $@
+bootpack.hrb : bootpack.bim Makefile
+	$(BIM2HRB) bootpack.bim bootpack.hrb 0
 
-int.o : int.c
-	$(CC) -fno-pie $(CFLAGS) $< -o $@
+haribote.sys : asmhead.bin bootpack.hrb Makefile
+	cat asmhead.bin bootpack.hrb > haribote.sys
 
-BOOTPACK_OBJ = bootpack.o nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o int.o
+haribote.img : ipl10.bin haribote.sys Makefile
+	mformat -f 1440 -C -B ipl10.bin -i haribote.img ::
+	mcopy haribote.sys -i haribote.img ::
 
-bootpack.hrb : $(BOOTPACK_OBJ) shin.ld
-	ld -m elf_i386 -T shin.ld $(BOOTPACK_OBJ) -o $@
+# 一般規則
+%.gas : %.c Makefile
+	$(CC1) -o $*.gas $*.c
 
-shinos.sys : asmhead.bin bootpack.hrb Makefile
-	cat asmhead.bin bootpack.hrb > shinos.sys
+%.nas : %.gas Makefile
+	$(GAS2NASK) $*.gas $*.nas
 
-shinos.img : ipl.bin shinos.sys Makefile
-	mformat -f 1440 -C -B ipl.bin -i shinos.img ::
-	mcopy shinos.sys -i shinos.img ::
-
-asm :
-	make -r ipl.bin
+%.obj : %.nas Makefile
+	$(NASK) $*.nas $*.obj $*.lst
 
 img :
-	make -r shinos.img
+	make -r haribote.img
+
+asm :
+	make -r ipl10.bin
 
 run :
 	make img
-	qemu-system-i386 -fda shinos.img	# "-fda" for floppy disk
-
-debug:
-	make img
-	qemu-system-i386 -fda shinos.img -gdb tcp::10000 -S
+	qemu-system-i386 -fda haribote.img
 
 clean :
-	rm *.lst
-	rm *.o
-	rm *.bin
-	rm *.hrb
-	rm *.sys
+	rm -f *.bin
+	rm -f *.lst
+	rm -f *.gas
+	rm -f *.obj
+	rm -f bootpack.nas
+	rm -f graphic.nas
+	rm -f dsctbl.nas
+	rm -f bootpack.map
+	rm -f bootpack.bim
+	rm -f bootpack.hrb
+	rm -f haribote.sys
 
-hyper_clean :
-	rm shinos.img
+src-only :
 	make clean
+	rm -f haribote.img
+
+clean-all:
+	make clean
+	make src-only
