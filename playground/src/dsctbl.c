@@ -13,17 +13,18 @@ void init_gdtidt(void)
     struct GateDescriptor *idt = (struct GateDescriptor *) ADR_IDT;
 
     // initialize GDT
-    for (int i = 0; i < LIMIT_GDT; i++) {
-        set_segmdesc(gdt + i, 0, 0, 0);
+    int i;
+    for (i = 0; i < LIMIT_GDT; i++) {
+        set_segmdesc(gdt + i, 0, 0, 0); // Go up by 8 Bytes
     }
     // CPU All Segment(4GB)
     set_segmdesc(gdt + 1, 0xffffffff, 0x00000000, AR_DATA32_RW);
-    // for the bootpack.hrb
+    // Limit is 512MB, for the `bootpack.hrb`
     set_segmdesc(gdt + 2, LIMIT_BOTPAK, ADR_BOTPAK, AR_CODE32_ER);
+    // configure GDTR
     load_gdtr(LIMIT_GDT, ADR_GDT);
-
     // initialize IDT
-    for (int i = 0; i < LIMIT_IDT; i++) {
+    for (i = 0; i < LIMIT_IDT / 8; i++) {
         set_gatedesc(idt + i, 0, 0, 0);
     }
     load_idtr(LIMIT_IDT, ADR_IDT);
@@ -38,10 +39,9 @@ void init_gdtidt(void)
 
 
 void set_segmdesc(struct SegmentDescriptor *sd,
-                  unsigned int limit,
-                  int base,
-                  int ar
-    )
+    unsigned int limit,
+    int base,
+    int ar)
 {
     if (limit > 0xfffff) {
         ar |= 0x8000; // OR
@@ -49,7 +49,7 @@ void set_segmdesc(struct SegmentDescriptor *sd,
     }
 
     sd->limit_low    = limit & 0xffff;
-    sd->base_low     = base & 0xffff;
+    sd->base_low     = base  & 0xffff;
     sd->base_mid     = (base >> 16) & 0xff; // right shiift
     sd->access_right = ar & 0xff;
     sd->limit_high   = ((limit >> 16) & 0x0f) | ((ar >> 8) & 0xf0);
@@ -59,10 +59,9 @@ void set_segmdesc(struct SegmentDescriptor *sd,
 }
 
 void set_gatedesc(struct GateDescriptor *gd,
-                  int offset,
-                  int selector,
-                  int ar
-    )
+    int offset,
+    int selector,
+    int ar)
 {
     gd->offset_low   = offset & 0xffff;
     gd->selector     = selector;
