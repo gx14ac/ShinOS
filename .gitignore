@@ -5,3 +5,5 @@
 *.sys
 *.hrb
 *.o
+*.obj
+*.map
