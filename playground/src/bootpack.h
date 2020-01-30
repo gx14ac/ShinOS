@@ -9,14 +9,13 @@ struct BootInfo {
     char *vram;                       // 4 byte
 };
 
-#define ADR_BOOTINFO	0x00000ff0
+#define ADR_BOOTINFO 0x00000ff0
 
 /* nasmfunc.asm */
 void io_hlt(void);
 void io_cli(void);
 void io_sti(void);
 void io_out8(int port, int data);
-int  io_in8(int port);
 int  io_load_eflags(void);
 void io_store_eflags(int eflags);
 void load_gdtr(int limit, int addr);
@@ -28,12 +27,11 @@ void asm_inthandler27(void);
 /* graphic.c  */
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
-void boxfill_8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
+void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
 void init_screen8(char *vram, int x, int y);
 void init_screen(char *vram, int x, int y);
 void put_font8(char *vram, int xsize, int x, int y, char c, char *font);
 void putfonts8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s);
-void sprintf(char *str, char *fmt, ...);
 void init_mouse_cursor8(char *mouse, char background_color);
 void putblock8_8(char *vram, int vxsize, int pxsize, int pysize, int px0, int py0, char *buf, int bxsize);
 
@@ -67,25 +65,26 @@ struct GateDescriptor { // 10byte
     short offset_high; // 4byte
 };
 
+void init_gdtidt(void);
 void set_segmdesc(struct SegmentDescriptor *sd, unsigned int limit, int base, int ar);
 void set_gatedesc(struct GateDescriptor *gd, int offset, int selector, int ar);
-void init_gdtidt(void);
 
-#define ADR_IDT			0x0026f800
-#define LIMIT_IDT		0x000007ff
-#define ADR_GDT			0x00270000
-#define LIMIT_GDT		0x0000ffff
-#define ADR_BOTPAK		0x00280000
-#define LIMIT_BOTPAK	0x0007ffff
-#define AR_DATA32_RW	0x4092
-#define AR_CODE32_ER	0x409a
-#define AR_INTGATE32	0x008e
+#define ADR_IDT      0x0026f800
+#define LIMIT_IDT    0x000007ff
+#define ADR_GDT      0x00270000
+#define LIMIT_GDT    0x0000ffff
+#define ADR_BOTPAK   0x00280000
+#define LIMIT_BOTPAK 0x0007ffff
+#define AR_DATA32_RW 0x4092
+#define AR_CODE32_ER 0x409a // IDTに対する属性設定で0x008eのこと。割り込み処理用の有効な設定である
+#define AR_INTGATE32 0x008e
 
 // int.c
 // PIC distinguishes even if the port number is the same
 void init_pic(void);
-void int_handler21(int *esp);
-void int_handler2c(int *esp);
+void inthandler21(int *esp);
+void inthandler27(int *esp);
+void inthandler2c(int *esp);
 #define PIC0_ICW1 0x0020
 #define PIC0_OCW2 0x0020
 #define PIC0_IMR  0x0021
