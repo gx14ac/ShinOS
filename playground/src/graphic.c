@@ -21,7 +21,6 @@ void init_palette(void) {
 	};
 	set_palette(0, 15, table_rgb);
 	return;
-	// static char 命令は、データにしか使えないけどDB程度命令相当
 }
 
 void set_palette(int start, int end, unsigned char *rgb) {
@@ -37,7 +36,6 @@ void set_palette(int start, int end, unsigned char *rgb) {
 	}
 	io_store_eflags(eflags); // 割り込み許可フラグを元に戻す
 	return;
-
 }
 
 void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1) {
