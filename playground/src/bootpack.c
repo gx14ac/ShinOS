@@ -2,8 +2,7 @@
 
 void HariMain(void)
 {
-    struct BootInfo *binfo = (struct BootInfo *) 0x0ff0;
-    extern char hankaku[4096];
+    struct BootInfo *binfo = (struct BootInfo *) ADR_BOOTINFO;
     char s[40], mcursor[256];
     int mx, my;
 
@@ -12,7 +11,7 @@ void HariMain(void)
     io_sti();
 
     init_palette();
-    init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
+    init_screen8(binfo->vram, binfo->scrnx, binfo->scrny);
     mx = (binfo->scrnx - 16) / 2;
     my = (binfo->scrny - 28 - 16) / 2;
     init_mouse_cursor8(mcursor, COL8_008484);
